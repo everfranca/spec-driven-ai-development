@@ -19,12 +19,21 @@
     **Regra de Ouro:**
     Se uma decisão técnica não estiver escrita aqui, ela não existe.
     Se existe um padrão definido no `README.MD` ou `AGENTS.MD`, ele **DEVE** ser respeitado e citado na especificação.
+    
+    ## Seção de Implementação
+    ** Plano Técnico** deve ser modularizada logicamente, facilitando a decomposição em tarefas independentes posteriormente.
+    
+    ## Concisão Técnica
+    - Use tabelas, JSONs e bullet points. Evite "fluff" textual. O código JSON deve ser o exemplo, não explicações longas em texto.
+
+    ## Consumidor do Documento
+    Além de desenvolvedores, este documento servirá como entrada para o comando gerar-tasks. Portanto, o plano de implementação deve ser granular e modular, permitindo que passos distintos sejam separados em arquivos de tarefa individuais (task-1.md, task-2.md) sem perder contexto.
 
     ## Anti-Patterns Proibidos
     - Não introduzir novas bibliotecas sem justificativa explícita e seção dedicada no documento.
     - Não alterar padrões arquiteturais existentes definidos em `README.md` ou `AGENTS.md`.
     - Não propor refactors fora do escopo funcional descrito no PRD.
-    *Aderência aos Padrões:** Nenhum Anti-Pattern foi violado?
+    - *Aderência aos Padrões:** Nenhum Anti-Pattern foi violado?
 
     
     # 3. PROTOCOLO DE EXECUÇÃO
@@ -34,6 +43,7 @@
     - Qual é a Stack exata? (ex: .NET 8, Clean Arch, Serilog?).
     - Quais são as regras de nomenclatura?
     - Existem bibliotecas obrigatórias para validação, log ou banco de dados?
+    - Inspecione a estrutura de pastas e exemplos de arquivos no repositório para validar se os padrões descritos nos docs batem com a realidade do código.
     
      *Nota: A Tech Spec gerada NÃO pode violar regras encontradas nestes arquivos.*
     
@@ -44,8 +54,7 @@
     - Os cenários de falha foram mapeados?
     
     ## PASSO 3: Rodada de Clarificação (OBRIGATÓRIO)
-    **PARE AGORA.** Não gere o documento ainda.
-    Gere uma lista de perguntas para o usuário para resolver lacunas ou conflitos de padrão.
+    Gere APENAS uma lista numerada de perguntas para resolver/clarificar lacunas ou conflitos de padrão. Não gere nenhum outro texto.
     - Exemplo: "O PRD pede fila, mas o README não menciona RabbitMQ. Devemos introduzir ou usar outra coisa?"
     - Exemplo: "O padrão do AGENTS.MD é usar Dapper, mas a feature é complexa. Posso usar EF Core?"
     
@@ -61,8 +70,9 @@
     3. [ ] **Contratos Reais:** Payloads JSON de Request/Response e Status Codes estão escritos.
     4. [ ] **Plano de Implementação Granular:** A Seção 8 lista passos técnicos (migrations, criação de classes, testes) prontos para virarem Tasks.
 	5. [ ] **Análise do repositório:** Análise profunda do repositório completa.
-	6. [ ] **Esclarecimentos técnicos:** Principais e esclarecimentos técnicos respondidos.
-	7. [ ] **Tech Spec:** Arquivo da Tech Spec foi criado corretamente no diretório de destino
+	6. [ ] **Otimização para Contexto:**: O documento foi escrito de forma concisa? (Uso de tabelas/JSONs preferencialmente a longos parágrafos para economizar tokens nos próximos passos)
+	7. [ ] **Esclarecimentos técnicos:** Principais e esclarecimentos técnicos respondidos.
+	8. [ ] **Tech Spec:** Arquivo da Tech Spec foi criado corretamente no diretório de destino
 	
 	# MPCs
 	** Para recorrer a documentações de linguagens, frameworks e bibliotecas, utilize o Context7 **.
