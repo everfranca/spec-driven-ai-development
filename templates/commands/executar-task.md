@@ -65,6 +65,7 @@
 	PASSO 5: ATUALIZAÇÃO DA TASK
 	- Gere o conteúdo COMPLETO do arquivo da task.
 	- Marque com [x] apenas os critérios comprovadamente atendidos.
+	- Marque com [x] a task recém completada em {{tasks_file.md}}
 	- Critérios sem evidência devem permanecer [ ].
 	</execution_protocol>
 	

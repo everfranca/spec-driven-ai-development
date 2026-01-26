@@ -8,6 +8,7 @@
       - Não assumir nada que não esteja explicitamente declarado
       - Planejar antes de perguntar
       - Perguntar antes de decidir
+	  - PERGUNTAS DE CLARIFICAÇÃO DEVEM SER REALIZADAS
    </critical>
    
    ## Objetivo
@@ -82,6 +83,7 @@
       - Não assumir nada que não esteja explicitamente declarado
       - Planejar antes de perguntar
       - Perguntar antes de decidir
+	  - PERGUNTAS DE CLARIFICAÇÃO DEVEM SER REALIZADAS
    </critical>
    
    ---
