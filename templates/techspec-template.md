@@ -5,9 +5,8 @@ Qualquer comportamento fora deste escopo deve ser explicitamente rejeitado.
 | Metadata | Details |
 | :--- | :--- |
 | **Status** | Draft |
-| **PRD Reference** | [Link to PRD](@specs/features/[nome-da-funcionalidade]/prd.md) |
-| **Função de Autoria** | IA atuando como Arquiteto de Software Sênior |
-| **Política de Mudanças** | Alterações permitidas somente por meio de regeneração |
+| **Data** | {{DATA_ATUAL}} |
+| **Referência PRD** | [Link PRD](@specs/features/[nome-da-funcionalidade]/prd.md) |
 
 ---
 

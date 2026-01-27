@@ -1,8 +1,11 @@
 # PRODUCT REQUIREMENTS DOCUMENT (PRD)
 
- **Status:** [Rascunho / Em Revisão / Aprovado]
- **Data:** {{DATA_ATUAL}}
- **Feature:** [nome-da-funcionalidade]
+| Metadata | Details |
+| :--- | :--- |
+| **Status** | Draft |
+| **Data** | {{DATA_ATUAL}} |
+| **Feature** | [nome-da-funcionalidade] |
+<!-- Status: DRAFT → IN_PROGRESS → APPROVED -->
 
 ---
 

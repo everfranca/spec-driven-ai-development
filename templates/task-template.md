@@ -1,7 +1,13 @@
 # Task: {{TASK_ID}} - {{TASK_TITLE}}
 
-**Status:** [TODO | IN_PROGRESS | DONE]
-**Referência Tech Spec:** Seção {{TECH_SPEC_SECTION}}
+| Metadata | Details |
+| :--- | :--- |
+| **Status** | [TODO | IN_PROGRESS | DONE] |
+| **Data** | {{DATA_ATUAL}} |
+| **Task** | {{TASK_TITLE}} |
+| **Feature** | [nome-da-funcionalidade] |
+| **Referência PRD** | [Link PRD](@specs/features/[nome-da-funcionalidade]/prd.md) |]
+| **Referência Tech Spec** | [Link PRD](@specs/features/[nome-da-funcionalidade]/techspec.md) |
 <!-- Status: TODO → IN_PROGRESS → DONE -->
 
 
