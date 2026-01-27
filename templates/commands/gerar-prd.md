@@ -76,6 +76,11 @@
       - Caminho: `.specs/features/[nome-da-funcionalidade]/prd.md`
    2. **Preenchimento:** Use o Template, o PRD deve descrever a funcionalidade em sua totalidade (Escopo Completo).
    3. **Ação:** Crie o diretório e salve o arquivo.
+
+   ## 6. REGRAS PARA ATUALIZAÇÃO DE STATUS
+   1. Ao iniciar a análise do PRD o status DEVE ser DRAFT (Rascunho).
+   2. Após todas as entrevistas com o Usuário o status DEVE ser IN PROGRESS.
+   3. Após todas as perguntas de clarificação o status DEVE ser APPROVED.
    
    <critical>
       - **Zero-Code**: NÃO ESCREVA NENHUM CÓDIGO.
@@ -88,5 +93,5 @@
    
    ---
 
-   **Command Version:** 0.0.2
+   **Command Version:** 0.0.3
 </system_instructions>

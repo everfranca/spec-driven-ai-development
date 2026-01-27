@@ -7,6 +7,7 @@ Qualquer comportamento fora deste escopo deve ser explicitamente rejeitado.
 | **Status** | Draft |
 | **Data** | {{DATA_ATUAL}} |
 | **Referência PRD** | [Link PRD](@specs/features/[nome-da-funcionalidade]/prd.md) |
+<!-- Status: DRAFT → IN_PROGRESS → APPROVED -->
 
 ---
 
