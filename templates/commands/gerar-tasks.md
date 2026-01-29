@@ -53,58 +53,9 @@
     </execution_flow>
 
     <templates>
-
-    TEMPLATE 1: ARQUIVO (`@specs/templates/tasks-template.md`)
-    -------------------------------------
-    # Master Task List
-
-    **Ref. PRD:** [Caminho PRD]
-    **Ref. TechSpec:** [Caminho TechSpec]
-    **Todos os arquivos DEVEM ser salvos em:** `./specs/features/[nome-da-funcionalidade]/`
-
-    ## Backlog de Execução Ordenado
-    > Este arquivo orquestra a ordem de execução. Não pule etapas.
-
-    - [ ] `task-1.md` (Status: Pendente)
-    - [ ] `task-2.md` (Status: Pendente)
-    ...
-
-    ## Traceability Matrix
-    | ID Requisito (PRD) | Componente (TechSpec) | Task ID |
-    |--------------------|-----------------------|---------|
-    | [ID ex: RF-01]     | [Componente ex: API]  | 01      |
-    -------------------------------------
-
-    TEMPLATE 2: ARQUIVO DE TAREFA (.specs/templates/task-[XX].md)
-    -------------------------------------
-    # Task [ID]: [Nome da Tarefa]
-
-    **Caminho do Arquivo:** `./specs/features/[nome-da-funcionalidade]/task-[XX].md`
-    **Dependências:** [IDs de tasks anteriores necessárias]
-    **Contexto:** [Explicação simples de 1 parágrafo para situar o desenvolvedor]
-
-    ## Objetivos
-    - [ ] [Objetivo 1]
-    - [ ] [Objetivo 2]
-
-    ## Plano de Implementação (Passo a Passo para Júnior)
-    [Instruções literais. Indique nomes de arquivos, classes e métodos.]
-
-    ### Passo 1: [Nome da Ação]
-    - **Arquivo Alvo:** `[caminho/do/arquivo]`
-    - **Ação:** [Instrução exata. Ex: "Criar função `validateEmail` que recebe string e retorna boolean"]
-    - **Detalhe Técnico:** [Ex: "Usar Regex X", "Importar biblioteca Y", "Seguir padrão Repository"]
-
-    ### Passo 2: [Nome da Ação]
-    - **Arquivo Alvo:** ...
-    - **Ação:** ...
-
-    ## Critérios de Aceitação (Definition of Done)
-    - [ ] O arquivo [X] existe no caminho [Y].
-    - [ ] A função [Z] passa nos testes unitários.
-    - [ ] O código segue a convenção de linting do projeto.
-    -------------------------------------
-    </templates>
+     **Destino Base para cada task:** `./specs/features/[nome-da-funcionalidade]/`
+     **Arquivo Tasks :** `./specs/features/[nome-da-funcionalidade]/task.md`
+    <templates>
 
     <output_format>
     Se (e somente se) o usuário aprovar o plano inicial, a saída final deve seguir estritamente este formato para facilitar a automação de salvamento de arquivos:
@@ -131,6 +82,6 @@
 		** APÓS A APROVAÇÃO DO USUÁRIO VOCÊ DEVE SALVAR TODOS OS ARQUIVOS DE TASK SEGUINDO A NOMENCLATURA INFORMADA E SALVAR NO ARQUIVOS `TASKS` NO MESMO DIRETÓRIO DO `PRD.MD`, `TECHSPEC.MD`
 	</critical>
 
-    **Command Version:** 0.0.1
+    **Command Version:** 0.0.2
 </system_instructions>
 
