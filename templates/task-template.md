@@ -116,8 +116,8 @@ A implementação final DEVE respeitar forma e assinatura.
 
 ---
 
-## 7. Arquivos Relevantes
-[Listar os arquivos relatantes para a execução da tarefa]
+## 7. Arquivos Relevantes (Obrigatório)
+[Listar os arquivos relatantes (arquivos da aplicação, documentações, etc) para a execução da tarefa]
 
 ## 8. Notas de Execução (Scratchpad)
 [Uso para decisões técnicas relevantes. Não repetir informações já documentadas]
