@@ -116,8 +116,8 @@ A implementação final DEVE respeitar forma e assinatura.
 
 ---
 
-## 7. Notas de Execução (Scratchpad)
-<!-- 
-Uso exclusivo para decisões técnicas relevantes.
-Não repetir informações já documentadas. 
--->
+## 7. Arquivos Relevantes
+[Listar os arquivos relatantes para a execução da tarefa]
+
+## 8. Notas de Execução (Scratchpad)
+[Uso para decisões técnicas relevantes. Não repetir informações já documentadas]
