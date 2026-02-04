@@ -27,13 +27,13 @@ Qualquer comportamento fora deste escopo deve ser explicitamente rejeitado.
 ## 2. High-Level Architecture [Obrigatório]
 ### 2.1 Context Diagram
  **Exemplo:**
- ```mermaid
+:::mermaid
  graph LR
      User -->|HTTP Request| API
      API -->|Publish Event| MessageBroker
      Worker -->|Consume| MessageBroker
      Worker -->|Write| Database
- ```
+:::
 <!-- 
 Regras:
 - O diagrama deve refletir APENAS os componentes mencionados no PRD.

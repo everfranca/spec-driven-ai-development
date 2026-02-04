@@ -36,8 +36,9 @@
 
 ## 3. Personas e User Stories
 
-| US-001 | **[Persona]** | [Ação] | [Benefício] |
+| [UserStoryID] | **[Persona]** | [Ação] | [Benefício] |
 | :--- | :--- | :--- | :--- |
+|US-001 | Contador  | Lançamento de Débito| Seja cadastrado com sucesso |
 
 **Cada User Story deve resultar em pelo menos um Requisito Funcional.**
 
