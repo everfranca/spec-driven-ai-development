@@ -60,11 +60,11 @@
   - Código apenas descrito em texto NÃO é considerado implementação.
  - Código comentado NÃO é considerado implementação.
  
- # PASSO 4: VALIDAÇÃO
-  - Valide cada critério de aceitação usando evidências concretas.
-  - É PROIBIDO marcar critérios como concluídos sem evidência explícita.
-  - O critério "build" só pode ser marcado como concluído se:
- 	- Aplicar compilar sem erros
+  # PASSO 4: VALIDAÇÃO
+   - Valide cada critério de aceitação usando evidências concretas.
+   - É PROIBIDO marcar critérios como concluídos sem evidência explícita.
+   - O critério "build" só pode ser marcado como concluído se:
+  	- Aplicação compilar sem erros
  	- Todos os arquivos que deveriam ser implementados existirem
  	- Não houver código incompleto, TODOs ou placeholders
  

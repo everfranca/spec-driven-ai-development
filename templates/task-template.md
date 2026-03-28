@@ -6,7 +6,7 @@
 | **Data** | {{DATA_ATUAL}} |
 | **Task** | {{TASK_TITLE}} |
 | **Feature** | [nome-da-funcionalidade] |
-| **Referência PRD** | [Link PRD](@specs/features/[nome-da-funcionalidade]/prd.md) |]
+ | **Referência PRD** | [Link PRD](./specs/features/[nome-da-funcionalidade]/prd.md) |
 | **Referência Tech Spec** | [Link PRD](@specs/features/[nome-da-funcionalidade]/techspec.md) |
 <!-- Status: TODO → IN_PROGRESS → DONE -->
 
