@@ -19,7 +19,8 @@ Transformar ideias vagas em código production-ready através de um fluxo estrut
     - **LÊ**: specs/core/architecture.md para validação de stack (se existir)
 4. **gerar-tasks.md** - Define QUANDO (tarefas atomicas) - Role: Tech Lead - Foco: Executabilidade
 5. **executar-task.md** - FAZER (implementacao e validacao) - Role: Engenheiro Senior - Foco: Codigo funcional
-6. Codigo Production-Ready
+6. **realizar-codereview.md** - VALIDA (qualidade e padroes) - Role: Senior Code Reviewer - Foco: Code review (OPCIONAL)
+7. Codigo Production-Ready
 
 ### Fluxo para Projetos Brownfield (legados)
 
@@ -34,7 +35,8 @@ Transformar ideias vagas em código production-ready através de um fluxo estrut
     - **LÊ**: specs/core/architecture.md (inferido) para validação de stack
 4. **gerar-tasks.md** - Define QUANDO (tarefas atomicas) - Role: Tech Lead - Foco: Executabilidade
 5. **executar-task.md** - FAZER (implementacao e validacao) - Role: Engenheiro Senior - Foco: Codigo funcional
-6. Codigo Production-Ready
+6. **realizar-codereview.md** - VALIDA (qualidade e padroes) - Role: Senior Code Reviewer - Foco: Code review (OPCIONAL)
+7. Codigo Production-Ready
 
 **Diferenças entre Greenfield e Brownfield:**
 - **Greenfield**: Começa do zero, entrevista usuário, 100% confiança nas decisões
@@ -50,7 +52,8 @@ spec-driven-ai-development/
 |   |-- gerar-prd.md (v0.0.5) - Gerar Product Requirements Document
 |   |-- gerar-techspec.md (v0.2.0) - Gerar Technical Specification
 |   |-- gerar-tasks.md (v0.0.3) - Quebrar em tarefas executaveis
-|   +-- executar-task.md (v0.0.4) - Executar tarefa especifica
+|   |-- executar-task.md (v0.0.4) - Executar tarefa especifica
+|   +-- realizar-codereview.md (v0.1.0) - Realizar Code Review
 |
 +-- templates/
     |-- product_vision-template.md - Estrutura da Visão de Produto
@@ -58,7 +61,8 @@ spec-driven-ai-development/
     |-- prd-template.md - Estrutura do PRD
     |-- techspec-template.md - Blueprint tecnico
     |-- task-template.md - Formato de tarefa individual
-    +-- tasks-template.md - Lista mestre de tarefas
+    |-- tasks-template.md - Lista mestre de tarefas
+    +-- codereview-template.md - Estrutura do Relatório de Code Review
 ```
 
 ## Comandos
@@ -185,6 +189,30 @@ Quebra a techspec em **tarefas atômicas e executáveis** que um desenvolvedor j
 **Entrada:** Arquivo de task específico
 **Saída:** Código funcional + task atualizada
 
+---
+
+### 5. `commands/realizar-codereview.md` (v0.1.0)
+**Role:** Tech Lead Sênior e Code Reviewer Especialista
+
+**Realiza análise técnica de código** de forma independente e evidence-based.
+
+**Características:**
+- Análise em 6 dimensões (Funcionalidade, Arquitetura, Segurança, Performance, Testes, Documentação)
+- Modos de operação: Branch (PR review), Arquivo/Diretório (revisão pontual), Flow (validação completa), All (auditoria)
+- Findings com localização precisa (arquivo:linha), código atual e correção recomendada
+- Classificação de severidade (CRITICAL, HIGH, MEDIUM, LOW)
+- Veredito baseado em fatos: APROVADO, APROVADO COM RESSALVAS ou REPROVADO
+- ZERO-ALTERAÇÃO: Apenas análise, sem escrever código
+
+**Entrada:** Escopo (branch, arquivo, PRD+TechSpec, ou todo codebase)
+**Saída:** Relatório estruturado de code review seguindo template padrão
+
+**Quando usar:**
+- Antes de mergear uma PR (Branch mode)
+- Para validar feature completa (Flow mode)
+- Para revisar arquivo específico (File mode)
+- Para auditoria técnica do projeto (All mode)
+
 ## Templates
 
 ### `templates/prd-template.md`
@@ -217,6 +245,14 @@ Formato de tarefa executável com:
 ### `templates/tasks-template.md`
 Lista mestre simples de todas as tarefas da feature.
 
+### `templates/codereview-template.md`
+Relatório estruturado de code review contendo:
+- Metadados (escopo, data, contexto, especificações)
+- Resumo de findings por severidade
+- Findings detalhados (CRITICAL, HIGH, MEDIUM, LOW)
+- Pontos positivos identificados
+- Veredito com justificativa e pré-condições para merge
+
 ## Como Usar
 
 ### Fluxo Completo de Desenvolvimento
@@ -243,9 +279,14 @@ Lista mestre simples de todas as tarefas da feature.
    - Tasks salvas em: `specs/features/autenticacao/task-*.md`
 
 5. **Executar Tasks:**
-   - Use executar-task.md para cada task
-   - Cada execução gera código real
-   - Marca checkboxes como concluídos
+    - Use executar-task.md para cada task
+    - Cada execução gera código real
+    - Marca checkboxes como concluídos
+
+6. **Code Review (opcional):**
+    - Use realizar-codereview.md para validar o código
+    - Escolha o modo: Branch, Arquivo, Flow ou All
+    - Relatório salvo em: `specs/features/[nome-da-funcionalidade]/codereview.md`
 
 ## Estrutura de Diretórios Esperada
 
