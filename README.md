@@ -364,5 +364,5 @@ TODO → IN_PROGRESS → DONE
 
 Este sistema é iterativo. Sugestões de melhoria nos comandos e templates são bem-vindas.
 
-**Versão Atual:** Framework v0.0.5
-**Última Atualização:** Março 2026
+**Versão Atual:** Framework v0.1.0
+**Última Atualização:** Abril 2026

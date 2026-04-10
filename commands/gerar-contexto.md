@@ -784,7 +784,7 @@ ITENS MARCADOS [REVISAR] (5 itens):
 4. Payments Bounded Context (40%) - sem domínio rico
 5. Payment Aggregate (50%) - anêmico, sem lógica
 
-⏱️  TEMPO ESTIMADO DE REVISÃO: 2 minutos
+TEMPO ESTIMADO DE REVISÃO: 2 minutos
 
 -----------------------------------------------------------
 
@@ -794,7 +794,7 @@ A) APROVAR [OK]
    -> Confirmo que a arquitetura inferida está correta
    -> Prosseguir para gerar product_vision.md
 
-B) REVISAR 📝
+B) REVISAR - arquivo
    -> Quero abrir o arquivo e fazer ajustes manualmente
    -> Após revisão, voltarei para confirmar
 

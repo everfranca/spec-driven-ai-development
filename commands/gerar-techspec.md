@@ -1,11 +1,12 @@
 <system_instructions>
 
-# SYSTEM COMMAND: TECHNICAL SPECIFICATION GENERATOR
+# GERADOR DE ESPECIFICAÇÃO TÉCNICA
 
 <critical>
 - **ZERO ASSUNÇÕES:** Não assuma nada que não esteja explícito no PRD, padrões do projeto ou código existente
 - **ADESÃO A PADRÕES:** Qualquer decisão técnica DEVE respeitar invariantes do README.md/AGENTS.md
 - **NOVAS BIBLIOTECAS:** Só introduzir se justificado explicitamente em seção dedicada
+- **EXPLORAÇÃO:** VOCÊ DEVE EXPLORAR ANTES DE PERGUNTAR.
 - **ANÁLISE OBRIGATÓRIA:** Passos 1 e 2 (Contexto + Código) são obrigatórios antes de qualquer decisão
 - **HUMAN-IN-THE-LOOP:** Perguntar antes de decidir, especialmente se houver conflito PRD vs Padrões
 - **ZERO ESPECULAÇÃO:** Não invente componentes ou fluxos não mencionados no PRD
@@ -304,7 +305,7 @@ Mapear o que NÃO está documentado mas é usado consistentemente:
      * useTable hook ou Table component
 
 **EXEMPLO DE SAÍDA (mantenha internamente):**
-Frontend Stack Detected:
+Stack de Frontend Detectada:
 - UI Library: shadcn-vue + TailwindCSS
 - Components: Button, Input, Card, Dialog, Form (in /components/ui)
 - Theme: ThemeProvider com dark mode (theme.ts)
@@ -419,7 +420,7 @@ Frontend Stack Detected:
      * Dados estáticos (fixtures)
 
 **EXEMPLO DE SAÍDA (mantenha internamente):**
-Database Stack Detected:
+Stack de Banco de Dados Detectada:
 - Type: PostgreSQL 15
 - ORM: Prisma (Node)
 - Migrations: Prisma Migrate (/prisma/migrations)
@@ -542,7 +543,7 @@ Database Stack Detected:
      * Alerts configurados?
 
 **EXEMPLO DE SAÍDA (mantenha internamente):**
-Infrastructure Stack Detected:
+Stack de Infraestrutura Detectada:
 - Docker: docker-compose.yml with postgres, redis, rabbitmq
 - Messaging: RabbitMQ (amqplib)
 - Cache: Redis (ioredis)
@@ -554,7 +555,7 @@ Infrastructure Stack Detected:
 
 #### 2.6. Análise de Features Similares
 
- #### 2.3. Análise de Features Similares
+ #### 2.6. Análise de Features Similares
 
 Identificar 1-2 features similares já implementadas:
 
@@ -1129,7 +1130,7 @@ POST /api/v1/orders
 Content-Type: application/json
 Authorization: Bearer {token}
 
-Request:
+Requisição:
 {
   "items": [
     {
@@ -1139,7 +1140,7 @@ Request:
   ]
 }
 
-Response 201 Created:
+Resposta 201 Created:
 {
   "orderId": "uuid-v4",
   "status": "PENDING",
@@ -1147,10 +1148,10 @@ Response 201 Created:
   "createdAt": "2024-03-01T10:00:00Z"
 }
 
-Response 422 Unprocessable Entity:
+Resposta 422 Unprocessable Entity:
 {
   "code": "INSUFFICIENT_STOCK",
-  "message": "Item xyz out of stock",
+  "message": "Item xyz sem estoque",
   "details": {
     "itemId": "xyz",
     "requested": 5,
@@ -1166,18 +1167,18 @@ Response 422 Unprocessable Entity:
 
 [OK] **BOM:**
 ```
-Entity: User
+Entidade: User
 - id (UUID, PK): Identificador único do usuário
 - email (VARCHAR(255), Unique, Not Null): Email do usuário
 - password_hash (VARCHAR(255), Not Null): Senha hasheada (Argon2id)
 - created_at (TIMESTAMP, Default: NOW): Data de criação
 - updated_at (TIMESTAMP): Última atualização
 
-Constraints:
+Restrições:
 - UNIQUE INDEX idx_email ON email
 - CHECK (length(email) >= 5)
 
-Relationships:
+Relacionamentos:
 - User 1:N Order (user_id FK)
 ```
 
@@ -1189,15 +1190,15 @@ Relationships:
 3. Criar endpoint
 
 [OK] **BOM:**
-1. Create migration `20240301_create_users_table.sql` with schema defined
-2. Create entity `User.cs` in `/src/Domain/Users/`
-3. Create interface `IUserRepository.cs` in `/src/Infrastructure/Users/`
-4. Implement `UserRepository.cs` with CRUD methods
-5. Create `CreateUserCommand.cs` and handler using MediatR pattern
-6. Add FluentValidation validator for CreateUserCommand
-7. Create `UsersController.cs` with POST /api/v1/users endpoint
-8. Write integration tests for UserRepository
-9. Write unit tests for CreateUserHandler
+1. Criar migration `20240301_create_users_table.sql` with schema defined
+2. Criar entidade `User.cs` in `/src/Domain/Users/`
+3. Criar interface `IUserRepository.cs` in `/src/Infrastructure/Users/`
+4. Implementar `UserRepository.cs` with CRUD methods
+5. Criar `CreateUserCommand.cs` e handler using MediatR pattern
+6. Adicionar FluentValidation validator for CreateUserCommand
+7. Criar `UsersController.cs` with POST /api/v1/users endpoint
+8. Escrever testes de integração for UserRepository
+9. Escrever testes unitários for CreateUserHandler
 
 ## 5. REGRAS PARA ATUALIZAÇÃO DE STATUS
 
@@ -1220,5 +1221,15 @@ DRAFT -> IN_PROGRESS -> APPROVED
 - Zero problemas de ALTA/MÉDIA severidade
 - TechSpec pronta para implementação
 
-**Command Version:** 0.2.0
+<critical>
+- **ZERO ASSUNÇÕES:** Não assuma nada que não esteja explícito no PRD, padrões do projeto ou código existente
+- **ADESÃO A PADRÕES:** Qualquer decisão técnica DEVE respeitar invariantes do README.md/AGENTS.md
+- **NOVAS BIBLIOTECAS:** Só introduzir se justificado explicitamente em seção dedicada
+- **EXPLORAÇÃO:** VOCÊ DEVE EXPLORAR ANTES DE PERGUNTAR.
+- **ANÁLISE OBRIGATÓRIA:** Passos 1 e 2 (Contexto + Código) são obrigatórios antes de qualquer decisão
+- **HUMAN-IN-THE-LOOP:** Perguntar antes de decidir, especialmente se houver conflito PRD vs Padrões
+- **ZERO ESPECULAÇÃO:** Não invente componentes ou fluxos não mencionados no PRD
+</critical>
+
+**Command Version:** 0.3.0
 </system_instructions>

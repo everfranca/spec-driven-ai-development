@@ -32,17 +32,73 @@
     ## 3. PROTOCOLO DE EXECUÇÃO (PASSOS OBRIGATÓRIOS)
 
     ### PASSO 1: Identificação do Escopo
-    Determine o modo de operação:
-    
+
+    #### 1.1 Detecção do Modo
+    Analise o input do usuario para identificar automaticamente o modo de operacao:
+
     - **Branch completa**: `git diff main...HEAD` (PR review)
-    - **Arquivo/Diretório**: Caminho específico informado
-    - **Fluxo completo**: PRD + TechSpec + código (validação de feature)
-    - **Aplicação inteira**: Todo o codebase (auditoria)
-    
-    Para o escopo definido:
-    1. Liste todos os arquivos que serão analisados
-    2. Identifique especificações aplicáveis (PRD, TechSpec)
-    3. Defina fronteiras (o que está dentro/fora do escopo)
+    - **Arquivo/Diretorio**: Caminho especifico informado
+    - **Fluxo completo**: PRD + TechSpec + codigo (validacao de feature)
+    - **Aplicacao inteira**: Todo o codebase (auditoria)
+
+    #### 1.2 Confirmacao do Escopo (INTERATIVO)
+
+    **NOTIFIQUE o usuario sobre o escopo detectado** e use a ferramenta `question` para confirmar:
+
+    ```
+    <question>
+    {
+      "questions": [{
+        "question": "Escopo detectado: [MODO]. Confirma ou deseja alterar?",
+        "header": "Confirmacao de Escopo",
+        "options": [
+          {
+            "label": "Sim, prosseguir",
+            "description": "Continuar analise com o escopo detectado: [MODO]"
+          },
+          {
+            "label": "Branch completa",
+            "description": "Revisao completa da branch atual (git diff main...HEAD)"
+          },
+          {
+            "label": "Arquivo/Diretorio",
+            "description": "Revisao especifica de um arquivo ou diretorio"
+          },
+          {
+            "label": "Fluxo completo",
+            "description": "Validacao completa de feature (PRD + TechSpec + codigo)"
+          },
+          {
+            "label": "Aplicacao inteira",
+            "description": "Auditoria tecnica de todo o codebase"
+          }
+        ],
+        "multiple": false
+      }]
+    }
+    </question>
+    ```
+
+    **PROCESSAMENTO DA ESCOLHA**:
+
+    - Se usuario escolher "Sim, prosseguir":
+      - Continue com o escopo detectado inicialmente
+
+    - Se usuario escolher outra opcao:
+      - Se for "Branch completa" ou "Aplicacao inteira":
+        - Prossiga diretamente com esse escopo
+      - Se for "Arquivo/Diretorio":
+        - SOLICITE ao usuario que digite o caminho do arquivo ou diretorio
+      - Se for "Fluxo completo":
+        - SOLICITE ao usuario que digite o nome da feature (para localizar PRD + TechSpec + codigo)
+
+    APENAS apos confirmacao explicita do usuario, prossiga para:
+
+    #### 1.3 Detalhamento do Escopo
+    Para o escopo confirmado:
+    1. Liste todos os arquivos que serao analisados
+    2. Identifique especificacoes aplicaveis (PRD, TechSpec)
+    3. Defina fronteiras (o que esta dentro/fora do escopo)
 
     ### PASSO 2: Análise Sistemática por Dimensão
     Para cada uma das 6 dimensões, analise TODO o código do escopo:
@@ -228,5 +284,5 @@
        - [ ] Zero emojis em qualquer parte do relatório
     </critical>
 
-    **Command Version:** 0.1.0
+    **Command Version:** 0.2.0
 </system_instructions>
