@@ -47,13 +47,24 @@ Transformar ideias vagas em código production-ready através de um fluxo estrut
 ```
 spec-driven-ai-development/
 |-- commands/
-|   |-- gerar-visao.md (v0.1.0) - Gerar Visão do Projeto (Inception Greenfield)
+|   |-- gerar-visao.md (v0.2.0) - Gerar Visão do Projeto (Inception Greenfield)
 |   |-- gerar-contexto.md (v0.1.0) - Analisar Projeto Legado (Brownfield Inference)
-|   |-- gerar-prd.md (v0.0.5) - Gerar Product Requirements Document
-|   |-- gerar-techspec.md (v0.2.0) - Gerar Technical Specification
-|   |-- gerar-tasks.md (v0.0.3) - Quebrar em tarefas executaveis
-|   |-- executar-task.md (v0.0.4) - Executar tarefa especifica
-|   +-- realizar-codereview.md (v0.1.0) - Realizar Code Review
+|   |-- gerar-prd.md (v0.1.0) - Gerar Product Requirements Document
+|   |-- gerar-techspec.md (v0.5.0) - Gerar Technical Specification
+|   |-- gerar-tasks.md (v0.7.0) - Quebrar em tarefas executaveis
+|   |-- executar-task.md (v0.3.0) - Executar tarefa especifica
+|   +-- realizar-codereview.md (v0.2.0) - Realizar Code Review
+|
+|-- skills/
+|   |-- product-manager/ - Skill para agentes IA atuarem como Product Manager
+|   +-- techspec-generator/ - Skill para agentes IA gerarem especificações técnicas
+|       +-- references/ - Arquivos de referência técnica
+|           |-- api-contracts.md
+|           |-- architecture-patterns.md
+|           |-- database-modeling.md
+|           |-- observability-testing.md
+|           |-- security-hardening.md
+|           +-- ux-ui-accessibility.md
 |
 +-- templates/
     |-- product_vision-template.md - Estrutura da Visão de Produto
@@ -126,7 +137,7 @@ Analisa **projetos existentes (brownfield)** e inferir regras de negócio e arqu
 
 ---
 
-### 1. `commands/gerar-prd.md` (v0.0.5)
+### 1. `commands/gerar-prd.md` (v0.1.0)
 **Role:** Product Manager Sênior
 
 Cria o **Product Requirements Document (PRD)** - o contrato entre stakeholders e desenvolvedores.
@@ -141,13 +152,16 @@ Cria o **Product Requirements Document (PRD)** - o contrato entre stakeholders e
 
 **Nota:** Se `specs/core/product_vision.md` existir, o comando o lerá para garantir consistência com a visão global do produto.
 
-### 2. `commands/gerar-techspec.md` (v0.0.4)
+### 2. `commands/gerar-techspec.md` (v0.5.0)
 **Role:** Arquiteto de Software Sênior
 
 Traduz requisitos de negócio em **especificação técnica detalhada** - o blueprint de implementação.
 
 **Características:**
 - Análise de padrões do projeto (README.md, AGENTS.md)
+- **Contract-First Development**: Detecção e documentacão de todas as fronteiras de integração
+- Classificação de contratos: DESCOBERTO (código), SOLICITADO (usuário), PROPOSTO (IA)
+- Seção 4 com todas as fronteiras: Client-Backend, Backend-Database, Backend-Message Broker, Backend-Cache, Backend-External Services, Backend-Storage, Backend-Search, Application-Environment
 - Define stack, bibliotecas, contratos de API, schemas
 - Plano de implementação granular e modular
 - Usa Context7 para documentação de frameworks
@@ -156,13 +170,15 @@ Traduz requisitos de negócio em **especificação técnica detalhada** - o blue
 
 **Nota:** Se `specs/core/architecture.md` existir, o comando o lerá para garantir que as decisões técnicas respeitem a arquitetura global do projeto.
 
-### 3. `commands/gerar-tasks.md` (v0.0.3)
+### 3. `commands/gerar-tasks.md` (v0.7.0)
 **Role:** Tech Lead Sênior
 
 Quebra a techspec em **tarefas atômicas e executáveis** que um desenvolvedor júnior pode seguir sem dúvidas.
 
 **Características:**
 - Isolamento de contexto tecnológico (Database, Backend, Frontend, Infra)
+- **Mapeamento obrigatório de contratos**: Cada task lista CT-XXX que implementa
+- Tabela resumo de contratos na task list
 - Cada task = 1 PR
 - Sub-tarefas detalhadas (passo-a-passo explícito)
 - Human-in-the-loop (aprovação do plano)
@@ -175,12 +191,13 @@ Quebra a techspec em **tarefas atômicas e executáveis** que um desenvolvedor j
 
 ---
 
-### 4. `commands/executar-task.md` (v0.0.4)
+### 4. `commands/executar-task.md` (v0.3.0)
 **Role:** Engenheiro de Software Sênior
 
 **Executa** itens pendentes de uma task, criando/modificando arquivos reais do projeto.
 
 **Características:**
+- **Contract Compliance**: Valida que schemas e contratos da techspec são respeitados
 - Contrato de execução obrigatório
 - Código persistido (não apenas descrição)
 - Validação com evidências objetivas
@@ -191,7 +208,7 @@ Quebra a techspec em **tarefas atômicas e executáveis** que um desenvolvedor j
 
 ---
 
-### 5. `commands/realizar-codereview.md` (v0.1.0)
+### 5. `commands/realizar-codereview.md` (v0.2.0)
 **Role:** Tech Lead Sênior e Code Reviewer Especialista
 
 **Realiza análise técnica de código** de forma independente e evidence-based.
@@ -231,6 +248,8 @@ Blueprint técnico com:
 - Design de Componentes (camadas arquiteturais)
 - Modelos de Dados / Schema
 - Contratos de API (Request/Response)
+- **Seção 2.7: Contratos de Integração** (todas as fronteiras: Client-Backend, Backend-Database, Backend-Message Broker, Backend-Cache, Backend-External Services, Backend-Storage, Backend-Search, Application-Environment)
+- **Seção 4: Contratos Detalhados** (classificação DESCOBERTO/SOLICITADO/PROPOSTO)
 - Lógica de Negócio e Algoritmos
 - Plano de Implementação
 
@@ -238,12 +257,16 @@ Blueprint técnico com:
 Formato de tarefa executável com:
 - Contexto e Objetivo
 - Requisitos (mapeados ao PRD)
+- **Seção 2.3: Contratos (CT-XXX)** (contratos que esta task implementa)
 - Plano de Execução (sub-tarefas)
 - Detalhes de Implementação (snippets)
 - Critérios de Aceite
 
 ### `templates/tasks-template.md`
-Lista mestre simples de todas as tarefas da feature.
+Lista mestre de tarefas com:
+- Tabela resumo de contratos (CT-XXX) por task
+- Status de cada task
+- Mapeamento de contratos
 
 ### `templates/codereview-template.md`
 Relatório estruturado de code review contendo:
@@ -330,6 +353,13 @@ seu-projeto/
 - Comportamentos observáveis
 - Contratos explícitos (JSON, status codes)
 
+### Contract-First
+- Toda integração entre componentes deve ter contrato explícito
+- Contratos classificados: DESCOBERTO (código existente), SOLICITADO (fornecido pelo usuário), PROPOSTO (proposto pela IA)
+- Nenhum contrato sem task responsável
+- Cada task lista seus contratos na seção 2.3
+- Seção 4 do techspec documenta TODAS as fronteiras de integração
+
 ## Status dos Documentos
 
 ### PRD Status Flow
@@ -352,17 +382,27 @@ TODO → IN_PROGRESS → DONE
 - **Context7:** Para consultar documentação de frameworks e bibliotecas
 - **Mermaid:** Para diagramas de arquitetura
 - **Gherkin:** Para cenários de teste BDD
+- **Skills para Agentes IA:**
+  - `product-manager`: Atua como Product Manager sênior
+  - `techspec-generator`: Gera especificações técnicas com contract-first
+- **Referências Técnicas:** (em `skills/techspec-generator/references/`)
+  - `api-contracts.md`: Padrões de contratos de API
+  - `architecture-patterns.md`: Padrões arquiteturais
+  - `database-modeling.md`: Modelagem de dados
+  - `observability-testing.md`: Testes e observabilidade
+  - `security-hardening.md`: Hardening de segurança
+  - `ux-ui-accessibility.md`: Acessibilidade UX/UI
 
 ## Notas Importantes
 
 - Todos os comandos usam system-instructions para orientar a IA
 - Templates garantem consistência entre features
 - Versionamento semântico em cada comando (ex: v0.0.5)
-- Foco em desenvolvimento guiado por especificações, não apenas código
+- **Contract-First Development**: Todas as fronteiras de integração devem ser documentadas antes da implementação
 
 ## Contribuindo
 
 Este sistema é iterativo. Sugestões de melhoria nos comandos e templates são bem-vindas.
 
-**Versão Atual:** Framework v0.1.0
+**Versão Atual:** Framework v0.2.0
 **Última Atualização:** Abril 2026
