@@ -794,7 +794,7 @@ A) APROVAR [OK]
    -> Confirmo que a arquitetura inferida está correta
    -> Prosseguir para gerar product_vision.md
 
-B) REVISAR - arquivo
+B) REVISAR
    -> Quero abrir o arquivo e fazer ajustes manualmente
    -> Após revisão, voltarei para confirmar
 

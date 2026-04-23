@@ -555,8 +555,6 @@ Stack de Infraestrutura Detectada:
 
 #### 2.6. Análise de Features Similares
 
- #### 2.6. Análise de Features Similares
-
 Identificar 1-2 features similares já implementadas:
 
 **PROTOCOLO:**
@@ -590,16 +588,132 @@ Decisões:
 - Testes de unidade focam em Handler
 ```
 
-**Checkpoint de Validação:**
-- [ ] Invariantes validados contra código real
-- [ ] Padrões implícitos mapeados
-- [ ] Features similares analisadas
-- [ ] Discrepâncias documentadas (README vs Realidade)
+#### 2.7. Deteccao de Contratos Existentes [CRITICO]
+
+**Objetivo:** Identificar TODOS os contratos ja existentes que esta feature toca, classificando cada um por origem (DESCOBERTO / SOLICITADO / PROPOSTO).
+
+**CLASSIFICACAO DE ORIGEM:**
+- **DESCOBERTO:** LLM encontrou definicao existente no codigo/docs
+- **SOLICITADO:** LLM nao encontrou, usuario forneceu a definicao
+- **PROPOSTO:** LLM propos com base no PRD e padroes do projeto
+
+**PRINCIPIO:** Nao importa se o outro lado esta no mesmo repositorio ou e um servico de terceiros. Todo contrato que a feature toca DEVE ser identificado.
+
+**CHECKLIST DE DETECCAO:**
+
+```
+[ ] CONTRATOS CLIENT-BACKEND (Frontend/App -> Backend)
+   - [ ] Buscar definicoes de API existentes:
+     * OpenAPI/Swagger specs (openapi.yml, swagger.json)
+     * GraphQL schemas (schema.graphql, .gql files)
+     * gRPC definitions (.proto files)
+     * Route definitions no codigo (controllers, routers, handlers)
+   - [ ] Buscar configuracao de CORS existente:
+     * CORS middleware/configuration no codigo
+     * Allowed origins, methods, headers configurados
+     * Diferencas entre ambientes (dev vs prod)
+   - [ ] Para cada endpoint/operacao encontrado: classificar como DESCOBERTO
+   - [ ] Para cada endpoint/operacao mencionado no PRD mas nao encontrado: classificar como SOLICITADO ou PROPOSTO
+   - [ ] Para CORS: classificar configuracao como DESCOBERTO ou PROPOSTO
+
+[ ] CONTRATOS BACKEND-DATABASE
+   - [ ] Buscar schemas e operacoes existentes:
+     * Migration files
+     * ORM models/entities
+     * Schema definition files (schema.prisma, etc.)
+     * Scripts SQL embutidos no codigo e parametros (stored procedures, functions, SQL commands, etc.)
+     * Arquivos com sufixos Repository, DAL, DAO, Gateway
+   - [ ] Extrair queries/commands desses arquivos
+   - [ ] Para cada operacao encontrada: classificar como DESCOBERTO
+   - [ ] Para novas tabelas/operacoes: classificar como PROPOSTO
+
+[ ] CONTRATOS BACKEND-MESSAGE BROKER
+   - [ ] Buscar eventos/mensagens existentes:
+     * Event definitions no codigo
+     * Queue/topic configurations
+     * Message schemas
+     * Publisher/Consumer patterns
+   - [ ] Para cada evento encontrado: classificar como DESCOBERTO
+   - [ ] Para novos eventos: classificar como PROPOSTO
+
+[ ] CONTRATOS BACKEND-CACHE
+   - [ ] Buscar padroes de cache existentes:
+     * Cache configurations
+     * Key patterns no codigo
+     * TTL definitions
+   - [ ] Para cada padrao encontrado: classificar como DESCOBERTO
+
+[ ] CONTRATOS BACKEND-EXTERNAL SERVICES
+   - [ ] Buscar integracoes externas existentes:
+     * HTTP client configurations
+     * SDK/client instances
+     * Webhook handlers
+     * API documentation references
+   - [ ] Para cada integracao encontrada: classificar como DESCOBERTO
+   - [ ] Para cada servico mencionado no PRD mas nao encontrado: classificar como SOLICITADO
+   - [ ] Incluir webhooks recebidos (inbound) e chamadas realizadas (outbound)
+
+[ ] CONTRATOS BACKEND-STORAGE
+   - [ ] Buscar storage patterns:
+     * Upload/download configurations
+     * Storage client instances
+     * File path patterns
+   - [ ] Para cada padrao encontrado: classificar como DESCOBERTO
+
+[ ] CONTRATOS BACKEND-SEARCH ENGINE
+   - [ ] Buscar search patterns:
+     * Index definitions
+     * Search queries no codigo
+   - [ ] Para cada padrao encontrado: classificar como DESCOBERTO
+
+[ ] CONTRATOS APPLICATION-ENVIRONMENT
+   - [ ] Buscar variaveis de ambiente:
+     * .env.example, .env.template, .env.local
+     * Config files (appsettings.json, config.yml, application.properties)
+     * Docker-compose environment sections
+     * Codigo que le env vars (process.env, os.Getenv, IConfiguration, etc.)
+   - [ ] Para cada variavel encontrada: classificar como DESCOBERTO
+   - [ ] Para novas variaveis necessarias: classificar como PROPOSTO
+```
+
+**TABELA DE RESULTADO (manter internamente):**
+
+```
+| ID | Fronteira | Contrato | Status | Como Obtido |
+|:---|:---|:---|:---|:---|
+| CT-001 | Client-Backend | POST /api/v1/orders | Novo | PROPOSTO |
+| CT-002 | Client-Backend | GET /api/v1/orders/{id} | Existente | DESCOBERTO (OpenAPI) |
+| CT-003 | Backend-Database | INSERT orders | Novo | PROPOSTO |
+| CT-004 | Backend-External | Stripe Payment Intent | Ausente | SOLICITADO |
+| CT-005 | Backend-Message | OrderCreated event | Novo | PROPOSTO |
+| ENV-001 | App-Environment | STRIPE_SECRET_KEY | Ausente | SOLICITADO |
+```
+
+**Checkpoint de Validacao:**
+- [ ] Todas as fronteiras verificadas (Client-Backend, Database, Message Broker, Cache, External, Storage, Search, Environment)
+- [ ] Contratos DESCOBERTOS documentados com fonte (arquivo:linha)
+- [ ] Contratos SOLICITADOS listados para pergunta no Passo 4
+- [ ] Contratos PROPOSTOS justificados
+- [ ] Nenhum servico de terceiros mencionado no PRD sem contrato identificado
 
 **Output Esperado:**
+- Tabela de Contratos com classificacao de origem
+- Lista de contratos SOLICITADOS (base do Passo 4.5)
+
+---
+
+**Checkpoint de Validacao (Passo 2 completo):**
+- [ ] Invariantes validados contra codigo real
+- [ ] Padroes implicitos mapeados
+- [ ] Features similares analisadas
+- [ ] Contratos detectados e classificados
+- [ ] Discrepancias documentadas (README vs Realidade)
+
+**Output Esperado (Passo 2 completo):**
 - Tabela de Invariantes Atualizada
-- Catálogo de Padrões Implícitos
-- Análise de Features Similares
+- Catalogo de Padroes Implicitos
+- Analise de Features Similares
+- Tabela de Contratos com Classificacao de Origem
 
 ---
 
@@ -665,9 +779,23 @@ Para cada Requisito Funcional do PRD, identificar decisões técnicas necessári
    - [ ] Configurações específicas?
 
 [ ] OBSERVABILIDADE
-   - [ ] Logs necessários (quais dados)?
-   - [ ] Métricas a serem emitidas?
-   - [ ] Tracing requirements?
+    - [ ] Logs necessários (quais dados)?
+    - [ ] Métricas a serem emitidas?
+    - [ ] Tracing requirements?
+
+[ ] CONTRATOS (CRITICO - cruzar com Passo 2.7)
+    - [ ] Todos os contratos DESCOBERTOS possuem schema completo?
+    - [ ] Todos os contratos SOLICITADOS foram perguntados ao usuario?
+    - [ ] Todos os contratos PROPOSTOS estao justificados?
+    - [ ] Fronteira Client-Backend: todos os endpoints/operacoes cobertos?
+    - [ ] Fronteira Backend-Database: todas as operacoes CRUD cobertas?
+    - [ ] Fronteira Backend-Message Broker: eventos publish e subscribe cobertos?
+    - [ ] Fronteira Backend-Cache: keys, TTL e invalidacao definidos?
+    - [ ] Fronteira Backend-External Services: outbound e inbound cobertos?
+    - [ ] Fronteira Backend-Storage: operacoes e formatos definidos?
+    - [ ] Fronteira Backend-Search: schemas de indice e query definidos?
+    - [ ] Fronteira Application-Environment: variaveis e secrets mapeados?
+    - [ ] Nenhum servico de terceiros sem contrato definido?
 ```
 
 **Checkpoint de Validação:**
@@ -675,6 +803,7 @@ Para cada Requisito Funcional do PRD, identificar decisões técnicas necessári
 - [ ] Lacunas técnicas identificadas
 - [ ] Dependências externas listadas
 - [ ] Compatibilidade com padrões verificada
+- [ ] Todas as fronteiras de contrato verificadas contra Passo 2.7
 
 **Output Esperado:**
 - Matriz de Mapeamento RF -> Decisão Técnica
@@ -784,11 +913,86 @@ Contexto: Migrations usam snake_case mas novo código sugere PascalCase
 [X] **Má pergunta:** "Qual padrão seguir?"
 [OK] **Boa pergunta:** "Análise detectou inconsistência: migrations antigas usam snake_case (user_profiles) mas código recente sugere PascalCase (UserProfiles). Para nova tabela 'order_items', devo: A) snake_case (consistente com DB), B) PascalCase (consistente com código recente), C) Outro padrão"
 
-**Checkpoint de Validação:**
+**Checkpoint de Validacao:**
 - [ ] Lacunas de ALTO impacto resolvidas
-- [ ] Novidades (bibliotecas, padrões) justificadas
+- [ ] Novidades (bibliotecas, padroes) justificadas
 - [ ] Perguntas claras e objetivas (sem ambiguidade)
-- [ ] Máximo de 8 perguntas por rodada
+- [ ] Maximo de 8 perguntas por rodada
+
+#### 4.5. Perguntas sobre Contratos SOLICITADOS
+
+**Objetivo:** Resolver contratos marcados como SOLICITADO no Passo 2.7
+
+**PRINCIPIO:** Nao importa se o outro lado esta no mesmo repositorio ou e um servico de terceiros. Se o contrato nao foi encontrado no codigo, ele DEVE ser solicitado ao usuario.
+
+**MODELO DE PERGUNTA:**
+
+```
+[LACUNA: CONTRATO SOLICITADO] Fronteira: Backend -> [Nome do Servico/Sistema]
+
+CONTEXTO:
+O PRD menciona "[requisito do PRD]".
+Nao foi encontrado no codigo:
+- [item 1 nao encontrado]
+- [item 2 nao encontrado]
+- [item 3 nao encontrado]
+
+PERGUNTA:
+Preciso do contrato desta integracao. Forneça:
+
+A) Ja existe integracao com [Servico]? Se sim, onde esta o codigo?
+B) E uma integracao nova? Se sim:
+   - Qual API/recurso sera usado?
+   - Qual versao da API?
+   - Quais operacoes sao necessarias?
+C) Existem webhooks/callbacks? Quais eventos escutar?
+D) Ha requisitos de autenticacao especificos?
+
+Se nao souber, posso propor um contrato padrao usando documentacao
+do servico (via Context7).
+```
+
+**EXEMPLO:**
+
+```
+[LACUNA: CONTRATO SOLICITADO] Fronteira: Backend -> Stripe API
+
+CONTEXTO:
+O PRD RF-005 menciona "processamento de pagamento via Stripe".
+Nao foi encontrado no codigo:
+- SDK do Stripe configurado
+- Definicoes de webhook
+- Schemas de request/response
+- Variaveis de ambiente STRIPE_*
+
+PERGUNTA:
+Preciso do contrato da integracao com Stripe. Forneça:
+
+A) O Stripe ja esta integrado? Se sim, onde esta o codigo?
+B) E uma integracao nova? Se sim, qual API do Stripe sera usada?
+   - Payment Intents? Checkout Sessions? Subscriptions?
+   - Qual versao da API?
+C) Existem webhooks? Quais eventos escutar?
+   - payment_intent.succeeded
+   - payment_intent.payment_failed
+   - Outros?
+D) Qual ambiente? (test mode / live mode)
+
+Se nao souber, posso propor um contrato padrao baseado na documentacao
+do Stripe (usando Context7).
+```
+
+**REGRA:** Para cada contrato SOLICITADO, classificar a resposta:
+- Se usuario forneceu schema -> atualizar para DESCOBERTO ou SOLICITADO (confirmado)
+- Se usuario pediu para propor -> usar Context7 e atualizar para PROPOSTO
+- Se usuario disse que nao precisa -> remover da lista de contratos
+
+**Checkpoint de Validacao (Contratos):**
+- [ ] Todos os contratos SOLICITADOS foram perguntados
+- [ ] Nenhum servico de terceiros sem contrato definido
+- [ ] Respostas classificadas corretamente (DESCOBERTO/SOLICITADO/PROPOSTO)
+- [ ] Contratos de webhooks (inbound) e chamadas (outbound) cobertos
+- [ ] Variaveis de ambiente e secrets para cada integracao mapeados
 
 **CRITICAL:** Aguarde resposta do usuário antes de prosseguir. Repita até zero lacunas de ALTO/MÉDIO impacto.
 
@@ -818,6 +1022,9 @@ Verificar cruzamentos entre:
 | PRD -> Código | PRD assume algo que não existe | PRD: "Usar UserService" mas classe não existe |
 | Clarificação -> Padrões | Resposta introduz conflito | User: "Usar EF Core" mas projeto: "Dapper" |
 | RF <-> RF | Requisitos conflitantes | RF-001: "Email obrigatório" RF-005: "Email opcional" |
+| Contratos -> Contratos | Schema inconsistente entre fronteiras | CT-001 response diverge de CT-010 payload |
+| Contrato -> Database | Payload não bate com schema | CT-001 envia campo que não existe na tabela |
+| Contrato -> Environment | Integração sem env var | CT-020 (Stripe) sem STRIPE_SECRET_KEY |
 ```
 
 **Ação se encontrar inconsistências:**
@@ -886,10 +1093,23 @@ CHECKLIST DE COMPLETUDE TÉCNICA:
    - [ ] Migrações necessárias
 
 [ ] INTERFACES
-   - [ ] Contratos de API completos (request/response)
-   - [ ] Status codes documentados
-   - [ ] Eventos/Messages com payloads
-   - [ ] Versionamento de API (se aplicável)
+    - [ ] Contratos de API completos (request/response)
+    - [ ] Status codes documentados
+    - [ ] Eventos/Messages com payloads
+    - [ ] Versionamento de API (se aplicável)
+
+[ ] CONTRATOS (CRITICO - todas as fronteiras)
+    - [ ] Client-Backend: todos os endpoints com ID, schema, status codes, headers
+    - [ ] Backend-Database: todas as operacoes com input/output/constraints
+    - [ ] Backend-Message Broker: eventos publish e subscribe com payload
+    - [ ] Backend-Cache: keys, TTL, invalidacao (se aplicavel)
+    - [ ] Backend-External Services: outbound e inbound com auth, rate limit, retry
+    - [ ] Backend-Storage: operacoes, formatos, tamanho (se aplicavel)
+    - [ ] Backend-Search: schemas de indice e query (se aplicavel)
+    - [ ] Application-Environment: variaveis backend, frontend e secrets
+    - [ ] Nenhum contrato sem classificacao de origem (DESCOBERTO/SOLICITADO/PROPOSTO)
+    - [ ] Contraparte de cada contrato identificada (mesmo que terceiro)
+    - [ ] Schemas consistentes entre fronteiras (response de CT-001 = input de CT-010)
 
 [ ] LÓGICA
    - [ ] Fluxo principal detalhado (passo a passo)
@@ -985,6 +1205,9 @@ Como proceder?
 - Violações de padrões fundamentais
 - Incompletude crítica (arquitetura, dados, interfaces)
 - Novidades não justificadas
+- Contratos sem classificacao de origem
+- Fronteira de contrato sem schema definido
+- Servico de terceiros mencionado no PRD sem contrato
 
 **Ação:**
 1. Listar numeradas com tipo e impacto
@@ -1054,11 +1277,20 @@ CHECKLIST DE VALIDAÇÃO FINAL:
    - [ ] Rotas de API completas (GET /api/v1/resource)?
    - [ ] Contratos JSON exatos (request/response)?
 
-[ ] CONTRATOS COMPLETOS
-   - [ ] Request payloads com campos e tipos?
-   - [ ] Response com todos os status codes possíveis?
-   - [ ] Error responses formatados?
-   - [ ] Headers necessários documentados?
+[ ] CONTRATOS COMPLETOS (TODAS AS FRONTEIRAS)
+    - [ ] Tabela Resumo de Contratos preenchida com IDs (CT-XXX)?
+    - [ ] Cada contrato tem classificacao de origem (DESCOBERTO/SOLICITADO/PROPOSTO)?
+    - [ ] Client-Backend: request/response com todos status codes e headers?
+    - [ ] Backend-Database: operacoes com input/output/constraints?
+    - [ ] Backend-Message Broker: eventos publish e subscribe com payload?
+    - [ ] Backend-Cache: keys, TTL, invalidacao (se aplicavel)?
+    - [ ] Backend-External Services: outbound e inbound com auth, retry?
+    - [ ] Backend-Storage: operacoes, formatos, tamanho (se aplicavel)?
+    - [ ] Backend-Search: schemas de indice e query (se aplicavel)?
+    - [ ] Application-Environment: variaveis backend, frontend e secrets?
+    - [ ] Schemas consistentes entre fronteiras?
+    - [ ] Nenhum servico de terceiros sem contrato?
+    - [ ] Nenhuma variavel de ambiente sem documentacao?
 
 [ ] PLANO DE IMPLEMENTAÇÃO GRANULAR
    - [ ] Passos técnicos específicos (não vagos)?
@@ -1231,5 +1463,5 @@ DRAFT -> IN_PROGRESS -> APPROVED
 - **ZERO ESPECULAÇÃO:** Não invente componentes ou fluxos não mencionados no PRD
 </critical>
 
-**Command Version:** 0.3.0
+**Command Version:** 0.4.0
 </system_instructions>

@@ -235,43 +235,140 @@ ANTI-PATTERNS:
 
 ---
 
-## 4. Especificações da interface (Contracts) [Se aplicável]
+## 4. Contratos de Integracao (Boundaries) [Obrigatorio]
 
-### 4.1 Public Interfaces
+<!-- INSTRUÇÕES DE PREENCHIMENTO GERAL:
+OBJETIVO: Documentar TODOS os contratos entre fronteiras do sistema
+REGRA PRINCIPAL: Toda fronteira que a feature toca DEVE ter seu contrato definido aqui.
+Não importa se o outro lado está no mesmo repositório ou é um serviço de terceiros.
+
+CLASSIFICAÇÃO DE ORIGEM (como o contrato foi obtido):
+- DESCOBERTO: LLM encontrou definição existente no código/docs (OpenAPI, proto, migrations, etc.)
+- SOLICITADO: LLM não encontrou, usuário forneceu a definição
+- PROPOSTO: LLM propôs com base no PRD e padrões do projeto
+
+CADA contrato DEVE conter:
+- Metadata com ID único (CT-XXX), fronteira, protocolo e origem
+- Schema de entrada completo com tipos
+- Schema de saida completo com tipos
+- Schema de erro com codigos
+- Headers/Metadata quando aplicável
+
+ANTI-PATTERNS GERAIS:
+- "Enviar dados para o backend" (qual schema? qual protocolo?)
+- "Salvar no banco" (qual tabela? quais campos? quais tipos?)
+- "Publicar evento" (qual tópico? qual payload? quais headers?)
+- Contrato sem ID de rastreamento (impossível vincular a tasks)
+- Omitir contratos de terceiros (Stripe, SendGrid, etc.)
+-->
+
+### Tabela Resumo de Contratos
+
+<!-- INSTRUÇÕES:
+Listar TODOS os contratos da feature com resumo. Preencher conforme cada subseção abaixo.
+-->
+
+| ID | Fronteira | Contrato | Protocolo | Origem | Secao Detalhe |
+|:---|:---|:---|:---|:---|:---|
+| CT-001 | Client-Backend | {{CONTRATO_001_NOME}} | {{PROTOCOL}} | {{DESCOBERTO/SOLICITADO/PROPOSTO}} | 4.1 |
+| CT-002 | Backend-Database | {{CONTRATO_002_NOME}} | {{PROTOCOL}} | {{DESCOBERTO/SOLICITADO/PROPOSTO}} | 4.2 |
+<!-- ADICIONAR LINHAS CONFORME NECESSÁRIO -->
+
+---
+
+### 4.1 Contrato Client-Backend [Se aplicavel]
 
 <!-- INSTRUÇÕES DE PREENCHIMENTO:
-OBJETIVO: Definir contratos de API EXATOS
-FORMATO: Endpoint completo com request/response
+OBJETIVO: Definir contratos entre clientes (frontend, app, terceiros) e o backend
+APLICABILIDADE: HTTP REST, gRPC, WebSocket, GraphQL, SSE, ou qualquer protocolo de comunicação cliente-servidor
 REGRAS:
-- Método HTTP e rota completos
+- Metodo/operacao e rota completos
 - Request payload com tipos
-- Response para TODOS os status codes possíveis (200, 201, 400, 404, 500)
+- Response para TODOS os status codes possiveis
 - Error responses formatados
+- Headers obrigatorios (auth, content-type, correlation-id)
+- Politicas de comunicacao cross-origin (CORS) quando aplicavel
 
-EXEMPLO BOM:
-POST /api/v1/orders
-Content-Type: application/json
-Authorization: Bearer {token}
+FORMATO POR ENDPOINT/OPERACAO:
+
+#### [CT-XXX] NOME_DO_ENDPOINT
+
+| Metadata | Details |
+|:---|:---|
+| **ID** | CT-XXX |
+| **Fronteira** | Client -> Backend |
+| **Protocolo** | [HTTP REST / gRPC / WebSocket / GraphQL / SSE] |
+| **Operacao** | [POST /api/v1/orders] |
+| **Como Obtido** | [DESCOBERTO / SOLICITADO / PROPOSTO] |
+| **Auth** | [Bearer JWT / API Key / None] |
 
 Request:
+```json
+{{REQUEST_SCHEMA}}
+```
+
+Response [STATUS_CODE]:
+```json
+{{SUCCESS_RESPONSE_SCHEMA}}
+```
+
+Error [STATUS_CODE]:
+```json
+{{ERROR_RESPONSE_SCHEMA}}
+```
+
+EXEMPLO BOM:
+#### CT-001 Create Order
+
+| Metadata | Details |
+|:---|:---|
+| **ID** | CT-001 |
+| **Fronteira** | Client -> Backend |
+| **Protocolo** | HTTP REST |
+| **Operacao** | POST /api/v1/orders |
+| **Como Obtido** | PROPOSTO |
+| **Auth** | Bearer JWT (role: customer, admin) |
+
+Headers:
+- Content-Type: application/json
+- Authorization: Bearer {token}
+- X-Correlation-Id: {uuid}
+
+Request:
+```json
 {
   "items": [
     {
-      "productId": "uuid",
+      "productId": "uuid-v4",
       "quantity": 1
     }
   ]
 }
+```
 
 Response 201 Created:
+```json
 {
-  "orderId": "uuid",
+  "orderId": "uuid-v4",
   "status": "PENDING",
   "totalAmount": 99.99,
   "createdAt": "2024-03-01T10:00:00Z"
 }
+```
+
+Response 400 Bad Request:
+```json
+{
+  "code": "VALIDATION_ERROR",
+  "message": "Invalid request payload",
+  "details": [
+    { "field": "items[0].quantity", "error": "Must be greater than 0" }
+  ]
+}
+```
 
 Response 422 Unprocessable Entity:
+```json
 {
   "code": "INSUFFICIENT_STOCK",
   "message": "Item xyz out of stock",
@@ -281,74 +378,702 @@ Response 422 Unprocessable Entity:
     "available": 2
   }
 }
+```
 
 Response 500 Internal Server Error:
+```json
 {
   "code": "INTERNAL_ERROR",
   "message": "Unexpected error occurred",
   "requestId": "correlation-id-here"
 }
+```
 
 EXEMPLO RUIM:
 POST /orders
 Request: { order data }
 Response: { order }
-(Faltam: versão da API, tipos, status codes, error cases)
+(Faltam: ID do contrato, versao da API, tipos, status codes, error cases, headers)
 
 ANTI-PATTERNS:
-- Não documentar error cases
-- Não especificar content-type
-- Status codes genéricos (sem 422, 400, 404)
+- Nao documentar error cases
+- Nao especificar content-type
+- Status codes genericos (sem 422, 400, 404)
 - Request sem tipos de dados
+- Omitir headers obrigatorios
+- Nao classificar origem (DESCOBERTO/SOLICITADO/PROPOSTO)
 -->
 
-{{PUBLIC_INTERFACES_CONTENT}}
-<!-- ADICIONAR ENDPOINTS CONFORME NECESSÁRIO -->
+{{CLIENT_BACKEND_CONTRACTS}}
+<!-- ADICIONAR ENDPOINTS/OPERACOES CONFORME NECESSARIO -->
 
-### 4.2 Interações internas (Events/Messages) [Se aplicável]
+#### 4.1.1 Politicas de Comunicacao Cross-Origin (CORS) [Se aplicavel]
 
 <!-- INSTRUÇÕES DE PREENCHIMENTO:
-OBJETIVO: Definir eventos/mensagens internas
-FORMATO: Evento com payload estruturado
-REGRAS:
-- Nome do evento (Passado, ex: OrderCreated)
-- Source (quem publica)
-- Payload com tipos
-- Correlation ID (sempre)
+OBJETIVO: Definir politicas de CORS quando frontend e backend estao em dominios/ports diferentes
+APLICABILIDADE: Aplicar sempre que a comunicacao Client-Backend for HTTP e houver
+possibilidade de cross-origin (diferentes dominios, subdominios, ports ou protocolos)
+REGRA: Mesmo em monorepo com SSR, pode haver chamadas cross-origin em ambiente de desenvolvimento.
+
+FORMATO:
+
+| Politica | Valor | Justificativa |
+|:---|:---|:---|
+| **Allowed Origins** | [lista de origens ou *] | [quais dominios podem acessar] |
+| **Allowed Methods** | [GET, POST, PUT, DELETE, PATCH, OPTIONS] | [quais metodos sao permitidos] |
+| **Allowed Headers** | [Content-Type, Authorization, X-Correlation-Id] | [quais headers o cliente pode enviar] |
+| **Exposed Headers** | [X-Request-Id, X-Total-Count] | [quais headers o cliente pode ler] |
+| **Allow Credentials** | [true / false] | [cookies, authorization headers] |
+| **Max Age** | [segundos] | [cache do preflight] |
+| **Como Obtido** | [DESCOBERTO / SOLICITADO / PROPOSTO] | |
 
 EXEMPLO BOM:
-Event: OrderCreated
-Source: CreateOrderHandler (Application Layer)
-Queue/Topic: orders.events
+
+| Politica | Valor | Justificativa |
+|:---|:---|:---|
+| **Allowed Origins** | https://app.example.com, http://localhost:3000 (dev) | Frontend em dominio diferente do backend |
+| **Allowed Methods** | GET, POST, PUT, DELETE, OPTIONS | CRUD completo + preflight |
+| **Allowed Headers** | Content-Type, Authorization, X-Correlation-Id | Headers obrigatorios dos contratos |
+| **Exposed Headers** | X-Request-Id, X-Total-Count | Cliente precisa ler para UI |
+| **Allow Credentials** | true | Autenticacao via cookie/JWT |
+| **Max Age** | 3600 | Preflight cache de 1h |
+| **Como Obtido** | DESCOBERTO (cors.ts com configuracao existente) |
+
+EXEMPLO RUIM:
+"CORS configurado"
+(Faltam: origins especificos, metodos, headers, credentials)
+
+ANTI-PATTERNS:
+- Allowed Origins: * em producao (risco de seguranca)
+- Nao documentar CORS quando frontend e backend estao separados
+- Omitir Allow Credentials quando usa cookies/auth
+- Nao alinhar Allowed Headers com os headers dos contratos
+-->
+
+| Politica | Valor | Justificativa |
+|:---|:---|:---|
+| **Allowed Origins** | {{CORS_ORIGINS}} | {{CORS_ORIGINS_JUSTIFICATION}} |
+| **Allowed Methods** | {{CORS_METHODS}} | {{CORS_METHODS_JUSTIFICATION}} |
+| **Allowed Headers** | {{CORS_HEADERS}} | {{CORS_HEADERS_JUSTIFICATION}} |
+| **Exposed Headers** | {{CORS_EXPOSED_HEADERS}} | {{CORS_EXPOSED_JUSTIFICATION}} |
+| **Allow Credentials** | {{CORS_CREDENTIALS}} | {{CORS_CREDENTIALS_JUSTIFICATION}} |
+| **Max Age** | {{CORS_MAX_AGE}} | {{CORS_MAX_AGE_JUSTIFICATION}} |
+| **Como Obtido** | {{DESCOBERTO/SOLICITADO/PROPOSTO}} | |
+
+---
+
+### 4.2 Contrato Backend-Database [Se aplicavel]
+
+<!-- INSTRUÇÕES DE PREENCHIMENTO:
+OBJETIVO: Definir contratos entre o backend e o banco de dados
+APLICABILIDADE: Qualquer mecanismo de persistencia (SQL, NoSQL, ORM, query builder, stored procedures)
+REGRAS:
+- Operacao claramente definida (query, command, procedure)
+- Input: parametros, entidades, filtros
+- Output: result sets, affected rows, generated keys
+- Constraints e erros esperados (violation, timeout, deadlock)
+- Transacoes quando aplicavel
+
+FORMATO POR OPERACAO:
+
+#### [CT-XXX] NOME_DA_OPERACAO
+
+| Metadata | Details |
+|:---|:---|
+| **ID** | CT-XXX |
+| **Fronteira** | Backend -> Database |
+| **Protocolo** | [SQL / NoSQL Query / ORM / Stored Procedure] |
+| **Operacao** | [INSERT / SELECT / UPDATE / DELETE / PROC] |
+| **Como Obtido** | [DESCOBERTO / SOLICITADO / PROPOSTO] |
+| **Tabela/Collection** | [nome] |
+
+Input:
+```json
+{{INPUT_SCHEMA}}
+```
+
+Output:
+```json
+{{OUTPUT_SCHEMA}}
+```
+
+Erros Esperados:
+- CONSTRAINT_VIOLATION: {{descricao}}
+- TIMEOUT: {{descricao}}
+
+EXEMPLO BOM:
+#### CT-005 Insert Order
+
+| Metadata | Details |
+|:---|:---|
+| **ID** | CT-005 |
+| **Fronteira** | Backend -> Database |
+| **Protocolo** | SQL (via ORM/Query Builder) |
+| **Operacao** | INSERT |
+| **Como Obtido** | DESCOBERTO (migration 20240301_create_orders.sql) |
+| **Tabela** | orders |
+
+Input:
+```json
+{
+  "id": "uuid-v4",
+  "customer_id": "uuid-v4",
+  "status": "PENDING",
+  "total_amount": 99.99,
+  "created_at": "2024-03-01T10:00:00Z"
+}
+```
+
+Output:
+```json
+{
+  "affected_rows": 1,
+  "generated_keys": ["uuid-v4"]
+}
+```
+
+Erros Esperados:
+- FK_VIOLATION: customer_id nao existe na tabela users
+- CHECK_VIOLATION: total_amount negativo
+
+EXEMPLO RUIM:
+"Salvar pedido no banco"
+(Faltam: ID, tabela, campos, tipos, constraints, erros)
+
+ANTI-PATTERNS:
+- "Salvar no banco" (qual tabela? quais campos?)
+- Nao documentar constraints e erros esperados
+- Omitir tipo de operacao (INSERT vs UPDATE)
+-->
+
+{{BACKEND_DATABASE_CONTRACTS}}
+<!-- ADICIONAR OPERACOES CONFORME NECESSARIO -->
+
+---
+
+### 4.3 Contrato Backend-Message Broker [Se aplicavel]
+
+<!-- INSTRUÇÕES DE PREENCHIMENTO:
+OBJETIVO: Definir contratos de mensageria (publicacao e consumo)
+APLICABILIDADE: Kafka, RabbitMQ, SQS, gRPC streaming, ou qualquer mecanismo de mensageria
+REGRAS:
+- Nome do evento (Passado: OrderCreated, PaymentFailed)
+- Source (quem publica) e Target (quem consome)
+- Topic/Queue/Channel
+- Payload com tipos
+- Correlation ID (sempre)
+- Estrategia de error (dead letter, retry)
+- Ordenacao (FIFO, particoes)
+
+FORMATO POR EVENTO/MENSAGEM:
+
+#### [CT-XXX] NOME_DO_EVENTO (Publish)
+
+| Metadata | Details |
+|:---|:---|
+| **ID** | CT-XXX |
+| **Fronteira** | Backend -> Message Broker |
+| **Direcao** | [Publish / Subscribe] |
+| **Topic/Queue** | [nome] |
+| **Como Obtido** | [DESCOBERTO / SOLICITADO / PROPOSTO] |
+| **Source** | [Componente que publica] |
+| **Target** | [Componente que consome] |
 
 Payload:
+```json
+{{EVENT_PAYLOAD}}
+```
+
+Headers/Metadata:
+```json
+{{EVENT_HEADERS}}
+```
+
+Error Handling:
+- Retry: {{policy}}
+- Dead Letter: {{topic}}
+
+EXEMPLO BOM:
+#### CT-010 OrderCreated (Publish)
+
+| Metadata | Details |
+|:---|:---|
+| **ID** | CT-010 |
+| **Fronteira** | Backend -> Message Broker |
+| **Direcao** | Publish |
+| **Topic/Queue** | orders.events |
+| **Como Obtido** | PROPOSTO |
+| **Source** | CreateOrderHandler (Application Layer) |
+| **Target** | PaymentWorker, InventoryWorker |
+
+Payload:
+```json
 {
-  "orderId": "uuid",
-  "customerId": "uuid",
-  "totalAmount": 99.99,
-  "items": [
-    {
-      "productId": "uuid",
-      "quantity": 1,
-      "unitPrice": 99.99
-    }
-  ],
-  "createdAt": "2024-03-01T10:00:00Z",
-  "correlationId": "uuid"
+  "eventId": "uuid-v4",
+  "eventType": "OrderCreated",
+  "timestamp": "2024-03-01T10:00:00Z",
+  "data": {
+    "orderId": "uuid-v4",
+    "customerId": "uuid-v4",
+    "totalAmount": 99.99,
+    "items": [
+      {
+        "productId": "uuid-v4",
+        "quantity": 1,
+        "unitPrice": 99.99
+      }
+    ]
+  },
+  "metadata": {
+    "correlationId": "uuid-v4",
+    "causationId": "uuid-v4"
+  }
 }
+```
+
+Error Handling:
+- Retry: 3 tentativas com backoff exponencial (1s, 2s, 4s)
+- Dead Letter: orders.events.dlq
 
 EXEMPLO RUIM:
 Event: OrderCreated
 Payload: { order data }
-(Faltam: source, tipos específicos, correlationId)
+(Faltam: ID, source, tipos especificos, correlationId, error handling)
 
-ANTI-PATTERN:
-- Eventos sem correlation ID (impossível tracing)
-- Payloads não estruturados
+ANTI-PATTERNS:
+- Eventos sem correlation ID (impossivel tracing)
+- Payloads nao estruturados
+- Nao definir estrategia de retry/dead letter
+- Omitir consumer esperado
 -->
 
-{{INTERNAL_INTERACTIONS_CONTENT}}
-<!-- ADICIONAR EVENTOS/MESSAGES CONFORME NECESSÁRIO -->
+{{BACKEND_MESSAGE_BROKER_CONTRACTS}}
+<!-- ADICIONAR EVENTOS/MESSAGES CONFORME NECESSARIO -->
+
+---
+
+### 4.4 Contrato Backend-Cache [Se aplicavel]
+
+<!-- INSTRUÇÕES DE PREENCHIMENTO:
+OBJETIVO: Definir contratos de cache (leitura, escrita, invalidacao)
+APLICABILIDADE: Redis, Memcached, cache em memoria, CDN cache, ou qualquer camada de cache
+REGRAS:
+- Key pattern (como a chave e formada)
+- TTL (tempo de vida)
+- Schema do valor cacheado
+- Estrategia de invalidacao
+
+FORMATO POR OPERACAO DE CACHE:
+
+#### [CT-XXX] NOME_DO_CACHE
+
+| Metadata | Details |
+|:---|:---|
+| **ID** | CT-XXX |
+| **Fronteira** | Backend -> Cache |
+| **Operacao** | [Get / Set / Invalidate] |
+| **Key Pattern** | [padrao] |
+| **TTL** | [tempo] |
+| **Como Obtido** | [DESCOBERTO / SOLICITADO / PROPOSTO] |
+
+Value Schema:
+```json
+{{CACHED_VALUE_SCHEMA}}
+```
+
+Invalidacao:
+- Trigger: {{quando invalidar}}
+- Pattern: {{quais chaves}}
+
+EXEMPLO BOM:
+#### CT-015 Product Catalog Cache
+
+| Metadata | Details |
+|:---|:---|
+| **ID** | CT-015 |
+| **Fronteira** | Backend -> Cache |
+| **Operacao** | Get/Set/Invalidate |
+| **Key Pattern** | product:catalog:{categoryId} |
+| **TTL** | 5 minutos |
+| **Como Obtido** | DESCOBERTO (Redis config em cache.ts) |
+
+Value Schema:
+```json
+{
+  "products": [
+    {
+      "id": "uuid-v4",
+      "name": "string",
+      "price": 99.99,
+      "stock": 10
+    }
+  ],
+  "cachedAt": "2024-03-01T10:00:00Z"
+}
+```
+
+Invalidacao:
+- Trigger: ProductUpdated, ProductDeleted events
+- Pattern: product:catalog:*
+
+EXEMPLO RUIM:
+"Usar cache para produtos"
+(Faltam: key pattern, TTL, schema, invalidacao)
+
+ANTI-PATTERNS:
+- Cache sem TTL (dados obsoletos indefinidamente)
+- Cache sem estrategia de invalidacao
+- Keys sem padrao documentado
+-->
+
+{{BACKEND_CACHE_CONTRACTS}}
+<!-- ADICIONAR ENTRADAS DE CACHE CONFORME NECESSARIO -->
+
+---
+
+### 4.5 Contrato Backend-External Services [Se aplicavel]
+
+<!-- INSTRUÇÕES DE PREENCHIMENTO:
+OBJETIVO: Definir contratos com servicos externos (terceiros, outras equipes, APIs publicas)
+APLICABILIDADE: HTTP REST, SOAP, gRPC, SDKs, webhooks, ou qualquer integracao externa
+REGRAS:
+- Servico de terceiros DEVE ter contrato definido (mesmo que não haja doc interna)
+- Distinguir OUTBOUND (backend chama terceiro) de INBOUND (terceiro chama backend/webhook)
+- Autenticacao com terceiro
+- Rate limits, retries, circuit breaker
+- NUNCA documentar valores reais de API keys ou secrets
+
+FORMATO POR INTEGRACAO:
+
+#### [CT-XXX] NOME_DO_SERVICO - Outbound (Backend -> Terceiro)
+
+| Metadata | Details |
+|:---|:---|
+| **ID** | CT-XXX |
+| **Fronteira** | Backend -> [Nome do Servico] |
+| **Direcao** | Outbound |
+| **Protocolo** | [HTTP REST / gRPC / SDK] |
+| **Operacao** | [POST /v1/payment-intents] |
+| **Como Obtido** | [DESCOBERTO / SOLICITADO / PROPOSTO] |
+| **Auth** | [API Key / OAuth / Bearer] |
+| **Rate Limit** | [X req/min] |
+| **Timeout** | [Xs] |
+
+Request:
+```json
+{{OUTBOUND_REQUEST}}
+```
+
+Response Success:
+```json
+{{OUTBOUND_SUCCESS_RESPONSE}}
+```
+
+Response Error:
+```json
+{{OUTBOUND_ERROR_RESPONSE}}
+```
+
+Error Handling:
+- Retry: {{policy}}
+- Circuit Breaker: {{config}}
+- Fallback: {{acao alternativa}}
+
+#### [CT-XXX] NOME_DO_SERVICO - Inbound (Webhook)
+
+| Metadata | Details |
+|:---|:---|
+| **ID** | CT-XXX |
+| **Fronteira** | [Nome do Servico] -> Backend |
+| **Direcao** | Inbound (Webhook) |
+| **Endpoint** | [POST /api/webhooks/servico] |
+| **Como Obtido** | [DESCOBERTO / SOLICITADO / PROPOSTO] |
+| **Verificacao** | [HMAC SHA256 / Signature Header] |
+
+Payload:
+```json
+{{WEBHOOK_PAYLOAD}}
+```
+
+Expected Response:
+```json
+{{WEBHOOK_ACK}}
+```
+
+EXEMPLO BOM:
+#### CT-020 Stripe Payment Intent - Outbound
+
+| Metadata | Details |
+|:---|:---|
+| **ID** | CT-020 |
+| **Fronteira** | Backend -> Stripe API |
+| **Direcao** | Outbound |
+| **Protocolo** | HTTP REST (via SDK) |
+| **Operacao** | POST /v1/payment_intents |
+| **Como Obtido** | SOLICITADO (usuario confirmou) |
+| **Auth** | Stripe Secret Key |
+| **Rate Limit** | 100 req/min |
+| **Timeout** | 10s |
+
+Request:
+```json
+{
+  "amount": 9999,
+  "currency": "usd",
+  "metadata": {
+    "orderId": "uuid-v4"
+  }
+}
+```
+
+Response 200 OK:
+```json
+{
+  "id": "pi_xxx",
+  "status": "requires_payment_method",
+  "amount": 9999,
+  "currency": "usd"
+}
+```
+
+Error 401:
+```json
+{
+  "error": {
+    "type": "authentication_error",
+    "message": "Invalid API Key"
+  }
+}
+```
+
+Error Handling:
+- Retry: 3 tentativas com backoff exponencial
+- Circuit Breaker: abrir apos 5 falhas consecutivas
+- Fallback: marcar pedido como PAYMENT_PENDING e processar manualmente
+
+#### CT-021 Stripe Webhook - Inbound
+
+| Metadata | Details |
+|:---|:---|
+| **ID** | CT-021 |
+| **Fronteira** | Stripe -> Backend |
+| **Direcao** | Inbound (Webhook) |
+| **Endpoint** | POST /api/webhooks/stripe |
+| **Como Obtido** | SOLICITADO (usuario confirmou) |
+| **Verificacao** | Stripe-Signature header (HMAC SHA256) |
+
+Payload (payment_intent.succeeded):
+```json
+{
+  "type": "payment_intent.succeeded",
+  "data": {
+    "object": {
+      "id": "pi_xxx",
+      "status": "succeeded",
+      "amount": 9999,
+      "metadata": {
+        "orderId": "uuid-v4"
+      }
+    }
+  }
+}
+```
+
+Expected Response: 200 OK (empty body)
+
+EXEMPLO RUIM:
+"Integrar com Stripe para pagamento"
+(Faltam: endpoint, payload, erros, auth, rate limit, timeout, webhooks)
+
+ANTI-PATTERNS:
+- Omitir contrato de servico de terceiro
+- Nao documentar webhooks recebidos
+- Nao definir retry/circuit breaker
+- Documentar valores reais de API keys
+-->
+
+{{BACKEND_EXTERNAL_CONTRACTS}}
+<!-- ADICIONAR INTEGRACOES CONFORME NECESSARIO -->
+
+---
+
+### 4.6 Contrato Backend-Storage [Se aplicavel]
+
+<!-- INSTRUÇÕES DE PREENCHIMENTO:
+OBJETIVO: Definir contratos de armazenamento de arquivos
+APLICABILIDADE: S3, Blob Storage, filesystem local, CDN, ou qualquer mecanismo de storage
+REGRAS:
+- Tipo de operacao (upload, download, delete)
+- Formatos aceitos, tamanho maximo
+- Path pattern (como o caminho e formado)
+- Controle de acesso (publico, privado, presigned URL)
+
+FORMATO POR OPERACAO:
+
+#### [CT-XXX] NOME_DA_OPERACAO
+
+| Metadata | Details |
+|:---|:---|
+| **ID** | CT-XXX |
+| **Fronteira** | Backend -> Storage |
+| **Operacao** | [Upload / Download / Delete] |
+| **Path Pattern** | [padrao] |
+| **Formatos Aceitos** | [mime types] |
+| **Tamanho Maximo** | [valor] |
+| **Acesso** | [Publico / Privado / Presigned URL] |
+| **Como Obtido** | [DESCOBERTO / SOLICITADO / PROPOSTO] |
+
+Input/Output Schema:
+```json
+{{STORAGE_SCHEMA}}
+```
+
+EXEMPLO BOM:
+#### CT-025 Upload Profile Image
+
+| Metadata | Details |
+|:---|:---|
+| **ID** | CT-025 |
+| **Fronteira** | Backend -> S3 Storage |
+| **Operacao** | Upload |
+| **Path Pattern** | /profiles/{userId}/avatar.{ext} |
+| **Formatos Aceitos** | image/jpeg, image/png, image/webp |
+| **Tamanho Maximo** | 2MB |
+| **Acesso** | Presigned URL (expira em 1h) |
+| **Como Obtido** | DESCOBERTO (storage.ts com S3 config) |
+
+EXEMPLO RUIM:
+"Fazer upload de imagem"
+(Faltam: path, formatos, tamanho, acesso)
+-->
+
+{{BACKEND_STORAGE_CONTRACTS}}
+<!-- ADICIONAR OPERACOES DE STORAGE CONFORME NECESSARIO -->
+
+---
+
+### 4.7 Contrato Backend-Search Engine [Se aplicavel]
+
+<!-- INSTRUÇÕES DE PREENCHIMENTO:
+OBJETIVO: Definir contratos com mecanismos de busca
+APLICABILIDADE: Elasticsearch, Meilisearch, Algolia, ou qualquer search engine
+REGRAS:
+- Schema do documento indexado
+- Query parameters aceitos
+- Schema da resposta (paginacao, scoring)
+
+FORMATO POR OPERACAO:
+
+#### [CT-XXX] NOME_DO_INDICE
+
+| Metadata | Details |
+|:---|:---|
+| **ID** | CT-XXX |
+| **Fronteira** | Backend -> Search Engine |
+| **Operacao** | [Index / Search / Delete] |
+| **Indice/Collection** | [nome] |
+| **Como Obtido** | [DESCOBERTO / SOLICITADO / PROPOSTO] |
+
+Document/Query Schema:
+```json
+{{SEARCH_SCHEMA}}
+```
+
+Response Schema:
+```json
+{{SEARCH_RESPONSE}}
+```
+-->
+
+{{BACKEND_SEARCH_CONTRACTS}}
+<!-- ADICIONAR OPERACOES DE SEARCH CONFORME NECESSARIO -->
+
+---
+
+### 4.8 Contrato Application-Environment [Obrigatorio]
+
+<!-- INSTRUÇÕES DE PREENCHIMENTO:
+OBJETIVO: Documentar variaveis de ambiente necessarias para a feature
+APLICABILIDADE: Toda feature que requer nova configuracao de ambiente
+REGRAS:
+- Listar TODAS as variaveis de ambiente que a feature precisa
+- Classificar: obrigatoria vs opcional
+- Documentar formato esperado
+- NUNCA documentar valores reais de secrets
+- Distinguir Backend, Frontend e Secrets
+
+FORMATO:
+
+#### Backend
+
+| ID | Nome | Tipo | Obrigatoria | Default | Descricao | Exemplo |
+|:---|:---|:---|:---|:---|:---|:---|
+| ENV-001 | {{VAR_NAME}} | [string/int/bool/url] | [Sim/Nao] | [valor ou N/A] | {{descricao}} | {{exemplo}} |
+
+#### Frontend
+
+| ID | Nome | Tipo | Obrigatoria | Default | Descricao | Exemplo |
+|:---|:---|:---|:---|:---|:---|:---|
+| ENV-010 | {{VAR_NAME}} | [string/url] | [Sim/Nao] | [valor ou N/A] | {{descricao}} | {{exemplo}} |
+
+#### Secrets (referencia SOMENTE, nunca valores)
+
+| ID | Nome | Formato | Obrigatoria | Descricao |
+|:---|:---|:---|:---|:---|
+| SEC-001 | {{SECRET_NAME}} | [min 32 chars / path / etc] | [Sim/Nao] | {{para que serve}} |
+
+EXEMPLO BOM:
+#### Backend
+
+| ID | Nome | Tipo | Obrigatoria | Default | Descricao | Exemplo |
+|:---|:---|:---|:---|:---|:---|:---|
+| ENV-001 | ORDERS_MAX_VALUE | int | Nao | 10000 | Valor maximo sem aprovacao manual | 10000 |
+| ENV-002 | ORDERS_CACHE_TTL | int | Nao | 300 | TTL do cache de pedidos (segundos) | 300 |
+
+#### Frontend
+
+| ID | Nome | Tipo | Obrigatoria | Default | Descricao | Exemplo |
+|:---|:---|:---|:---|:---|:---|:---|
+| ENV-010 | NEXT_PUBLIC_API_URL | url | Sim | N/A | URL base da API | https://api.example.com |
+
+#### Secrets
+
+| ID | Nome | Formato | Obrigatoria | Descricao |
+|:---|:---|:---|:---|:---|
+| SEC-001 | STRIPE_SECRET_KEY | sk_live_* (min 32 chars) | Sim | Chave secreta do Stripe |
+| SEC-002 | JWT_SECRET | min 32 chars | Sim | Secret para assinatura de JWT |
+
+EXEMPLO RUIM:
+"Configurar variaveis de ambiente necessarias"
+(Faltam: nomes, tipos, defaults, exemplos, secrets)
+
+ANTI-PATTERNS:
+- Documentar valor real de secrets/API keys
+- Variavel sem descricao
+- Nao distinguir backend de frontend
+- Nao documentar formato esperado de secrets
+-->
+
+#### Backend
+
+| ID | Nome | Tipo | Obrigatoria | Default | Descricao | Exemplo |
+|:---|:---|:---|:---|:---|:---|:---|
+{{BACKEND_ENV_VARS}}
+<!-- ADICIONAR LINHAS CONFORME NECESSARIO -->
+
+#### Frontend
+
+| ID | Nome | Tipo | Obrigatoria | Default | Descricao | Exemplo |
+|:---|:---|:---|:---|:---|:---|:---|
+{{FRONTEND_ENV_VARS}}
+<!-- ADICIONAR LINHAS CONFORME NECESSARIO -->
+
+#### Secrets (referencia SOMENTE, nunca valores)
+
+| ID | Nome | Formato | Obrigatoria | Descricao |
+|:---|:---|:---|:---|:---|
+{{SECRETS_REF}}
+<!-- ADICIONAR LINHAS CONFORME NECESSARIO -->
 
 ---
 
@@ -578,4 +1303,4 @@ REGRAS DE ATOMICIDADE:
 
 ---
 
-**Template Version:** 0.2.0
+**Template Version:** 0.3.0

@@ -61,9 +61,17 @@
    - É PROIBIDO marcar critérios como concluídos sem evidência explícita.
    - O critério "build" só pode ser marcado como concluído se:
   	- Aplicação compilar sem erros
- 	- Todos os arquivos que deveriam ser implementados existirem
- 	- Não houver código incompleto, TODOs ou placeholders
- 
+  	- Todos os arquivos que deveriam ser implementados existirem
+  	- Não houver código incompleto, TODOs ou placeholders
+
+  # PASSO 5: ATUALIZAÇÃO DA TASK
+    - APOS concluir a implementacao e validacao interna, atualize a task marcando os itens concluidos
+    - Atualize o arquivo tasks.md marcando a task como concluida
+    - A task pode ser marcada como DONE apos:
+      - Aplicacao compilar sem erros
+      - Todos os arquivos que deveriam ser implementados existirem
+      - Nao houver codigo incompleto, TODOs ou placeholders
+
   </execution_protocol>
  	
   <constraints>
@@ -83,40 +91,43 @@
  
   </anti_patterns>
  	
- <output_format>
-  ## Resumo e Plano: 
-   - Resumo do escopo
-   - Plano de execução
-   - Contrato de execução
-  
-  ## Arquivos de Código (Persistidos no Projeto)
-   Para cada arquivo:
-   Arquivo: caminho/do/arquivo.ext
-   Conteúdo completo do arquivo
-  
-  # Atualização da Task
-   - Arquivo: path_to_task_file
-   - Task com checkboxes atualizados
-   - Arquivo `tasks.md` com checkbox atualizado
- </output_format>
- 	
- <critical>
- 
-  # INICIE A EXECUÇÃO SOMENTE APÓS: 
-   - Definir o contrato de execução
-   - Confirmar que todos os critérios podem ser atendidos
-   - Todos os testes devem passar com 100% de sucesso.
-  
-  # ATUALIZAÇÃO DA TASK
-  - Gere o conteúdo COMPLETO do arquivo da task.
-  - Marque com [x] apenas os critérios comprovadamente atendidos.
-  - Marque com [x] a task recém completada em {{tasks_file.md}}
-  - Critérios sem evidência devem permanecer [ ].
+  <output_format>
+    ## Resumo e Plano:
+     - Resumo do escopo
+     - Plano de execução
+     - Contrato de execução
 
-   - **Para recorrer a documentações de linguagens, frameworks e bibliotecas, utilize o Context7**.
- 
- </critical>
+    ## Arquivos de Código (Persistidos no Projeto)
+     Para cada arquivo:
+     Arquivo: caminho/do/arquivo.ext
+     Conteúdo completo do arquivo
+
+    # Atualização da Task
+     - Arquivo: path_to_task_file
+     - Task com checkboxes atualizados
+     - Arquivo `tasks.md` com checkbox atualizado
+  </output_format>
  	
- Command Version: 0.1.0
+  <critical>
+
+    # INICIE A EXECUÇÃO SOMENTE APÓS:
+     - Definir o contrato de execução
+     - Confirmar que todos os critérios podem ser atendidos
+
+    # ATUALIZAÇÃO DA TASK
+    - A task pode ser marcada como DONE apos:
+      - Aplicacao compilar sem erros
+      - Todos os arquivos que deveriam ser implementados existirem
+      - Nao houver codigo incompleto, TODOs ou placeholders
+    - Gere o conteúdo COMPLETO do arquivo da task.
+    - Marque com [x] apenas os critérios comprovadamente atendidos.
+    - Marque com [x] a task recém completada em {{tasks_file.md}}
+    - Critérios sem evidência devem permanecer [ ].
+
+     - **Para recorrer a documentações de linguagens, frameworks e bibliotecas, utilize o Context7**.
+
+  </critical>
+ 	
+ Command Version: 0.2.0
  
 </system_instructions>

@@ -243,7 +243,7 @@ Como proceder?
 **Apresentar o arquivo gerado ao usuário:**
 
 ```
-Visao de Produto gerada: specs/core/product_vision.md
+Visão de Produto gerada: specs/core/product_vision.md
 
 Resumo:
 - Problema: [breve descrição]
@@ -489,7 +489,7 @@ Verifique contradições técnicas:
 **Apresentar o arquivo gerado ao usuário:**
 
 ```
-Arquitetura definida: specs/core/architecture.md
+✅ Arquitetura definida: specs/core/architecture.md
 
 Resumo:
 - Paradigma: [nome do paradigma]
@@ -538,7 +538,7 @@ Responda:
 
 1. **Confirmar estrutura criada:**
    ```
-    ```
+    Estrutura criada:
 
    specs/
    └── core/
@@ -549,7 +549,7 @@ Responda:
 2. **Apresentar resumo dos artefatos:**
 
    ```
-    ```
+    ARTEFATOS FUNDACIONAIS CRIADOS
 
    1. Visão de Produto (specs/core/product_vision.md)
       - Problema central: [resumo]
@@ -566,7 +566,7 @@ Responda:
 3. **Orientar sobre próximos passos:**
 
    ```
-    ```
+    PRÓXIMOS PASSOS
 
    Com a fundação estabelecida, você pode agora:
 
@@ -582,13 +582,13 @@ Responda:
       → Use /gerar-tasks para quebrar em tarefas executáveis
       → Use /executar-task para implementar
 
-    As features criadas agora serão consistentes com a visao de produto e arquitetura definidas.
+    As features criadas agora serão consistentes com a visão de produto e arquitetura definidas.
    ```
 
 4. **Orientar sobre manutenção:**
 
    ```
-   MANUTENÇÃO DOS ARTEFATOS
+    MANUTENÇÃO DOS ARTEFATOS
 
    Quando atualizar:
    - product_vision.md: Atualizar se o direcionamento de produto mudar
@@ -681,12 +681,12 @@ Assume nível COMPREHENSIVE sem perguntar.
 
 ### Sinais de Alerta
 
- **SINAL DE ALERTA** Se você falar sobre TÉCNICA na Fase de Produto:**
+**Se você falar sobre TÉCNICA na Fase de Produto:**
 - Frameworks, bibliotecas, linguagens → PARE e redirecione
 - Bancos de dados, APIs, endpoints → PARE e redirecione
 - Cloud, containers, deploy → PARE e redirecione
 
- **SINAL DE ALERTA** Se você falar sobre NEGÓCIO na Fase Técnica:**
+**Se você falar sobre NEGÓCIO na Fase Técnica:**
 - Funcionalidades específicas → PARE e verifique se isso deve estar em product_vision.md
 - Personas, usuários → PARE e remova do architecture.md
 - Métricas de negócio (receita) → PARE e substitua por métricas técnicas (latência)
@@ -695,12 +695,12 @@ Assume nível COMPREHENSIVE sem perguntar.
 
 | Pergunta | Fase de Produto | Fase Técnica |
 |:---|:---|:---|
-| "Quem são os usuários?" | SIM | NÃO |
-| "Qual framework usar?" | NÃO | SIM |
-| "Como medir sucesso?" | SIM (receita, retenção) | SIM (latência, uptime) |
-| "Onde hospedar?" | NÃO | SIM |
-| "Quais funcionalidades?" | SIM (escopo IN) | NÃO |
-| "Como estruturar código?" | NÃO | SIM |
+| "Quem são os usuários?" | ✅ SIM | ❌ NÃO |
+| "Qual framework usar?" | ❌ NÃO | ✅ SIM |
+| "Como medir sucesso?" | ✅ SIM (receita, retenção) | ✅ SIM (latência, uptime) |
+| "Onde hospedar?" | ❌ NÃO | ✅ SIM |
+| "Quais funcionalidades?" | ✅ SIM (escopo IN) | ❌ NÃO |
+| "Como estruturar código?" | ❌ NÃO | ✅ SIM |
 
 ---
 

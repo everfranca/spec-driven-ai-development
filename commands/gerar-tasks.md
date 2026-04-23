@@ -63,8 +63,60 @@
            
            **JUSTIFICATIVA**: Tasks misturadas sao dificeis de testar, revisar, reverter e paralelizar.
         
-        7. **Regra de Granularidade**: 
-            - Sempre que possível quebre em sub-tasks.
+         7. **Regra de Granularidade**: 
+             - Sempre que possível quebre em sub-tasks.
+
+         8. **RASTREABILIDADE DE CONTRATOS** (Obrigatorio):
+
+            **PRINCIPIO**: Cada task DEVE referenciar explicitamente quais contratos
+            da secao 4 do techspec.md ela implementa.
+
+            **REGRAS**:
+            - Leia a secao 4 do techspec.md e identifique TODOS os contratos (CT-XXX)
+            - Para cada contrato, atribua a task responsavel pela implementacao
+            - NENHUM contrato pode ficar sem task associada
+            - Cada task deve listar contratos de ENTRADA e de SAIDA
+            - Contratos de variaveis de ambiente DEVEM ser mapeados
+            - A secao 2.3 do task-template.md DEVE ser preenchida para cada task
+
+            **MAPEAMENTO POR CAMADA**:
+            - **Database**: Contratos Backend-Database (secao 4.2 do techspec)
+            - **Backend**: Contratos Client-Backend (4.1), Backend-Message Broker (4.3),
+              Backend-Cache (4.4), Backend-External (4.5), Backend-Search (4.7),
+              Application-Environment (4.8)
+            - **Frontend**: Contratos Client-Backend como CONSUMIDOR (4.1),
+              Application-Environment (4.8)
+            - **Infraestrutura**: Contratos de Config + Docker + CI/CD (4.8)
+
+            **EXEMPLO**:
+            - Task 1 (Database): CT-003 (INSERT orders), CT-004 (INSERT order_items)
+            - Task 2 (Backend): CT-001 (POST /orders), CT-010 (OrderCreated event), ENV-001
+            - Task 3 (Frontend): CT-001 (consumidor), ENV-010
+
+         9. **DESCOBERTA DE CONTRATOS ANTES DE GERAR TASKS** (Obrigatorio):
+
+            **PRINCIPIO**: Nao importa se o outro lado esta no mesmo repositorio
+            ou e um servico de terceiros. Todo contrato da techspec deve ser mapeado.
+
+            **ANTES de criar tasks, voce DEVE**:
+
+            1. Ler a secao 4 do techspec.md COMPLETAMENTE
+            2. Extrair a Tabela Resumo de Contratos
+            3. Para cada contrato listado, verificar:
+               - DESCOBERTO: contrato ja existe no codigo (task = adaptar/integrar)
+               - SOLICITADO: contrato foi definido pelo usuario (task = implementar do zero)
+               - PROPOSTO: contrato foi proposto pela LLM (task = implementar + validar)
+            4. Garantir que NENHUM contrato fique sem task
+            5. Se um contrato de terceiros nao estiver documentado na techspec,
+               a task NAO deve ser criada - sinalizar a lacuna ao usuario
+            6. O titulo de cada task no tasks.md deve incluir os IDs dos contratos
+
+            **AUTO-VALIDACAO**:
+            - [ ] Todos os CT-XXX da techspec estao mapeados em ao menos uma task?
+            - [ ] Todos os ENV-XXX e SEC-XXX estao mapeados?
+            - [ ] Nenhum contrato esta sem responsavel?
+            - [ ] As tasks de Frontend referenciam contratos Client-Backend como consumidores?
+            - Se qualquer resposta = NAO -> corrigir antes de gerar.
 
     </critical_rules>
 
@@ -112,5 +164,5 @@
 			    TODAS AS COLUNAS DEVEM SER OBRIGATÓRIAMENTE PREENCHIDAS**
 	</critical>
 
-    **Command Version:** 0.5.0
+    **Command Version:** 0.6.0
 </system_instructions>
